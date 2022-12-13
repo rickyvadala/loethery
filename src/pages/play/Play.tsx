@@ -1,4 +1,5 @@
 import logo from '../../assets/img/react.svg';
+import etherCoin from '../../assets/img/ether-coin.png';
 import React, {useEffect, useState} from "react";
 import web3 from '../../web3/web3'
 import lottery from "../../web3/lottery";
@@ -50,56 +51,57 @@ const Play = () => {
     }
 
     return (
-        <div className="App">
-            <div className="relative px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl pt-20 pb-32 sm:pt-48 sm:pb-40">
-                    <div>
-                        <div>
-                            <h1 className="text-6xl sm:text-center sm:text-8xl">
-                                <Logo />
-                            </h1>
-                            <h5 className="mt-8 text-xl leading-8 text-white sm:text-center">
-                                The decentralized lottery
-                            </h5>
-                            <div className="mt-8 flex gap-x-4 sm:justify-center">
-                                <a
-                                    href="#"
-                                    className="rounded-lg bg-amber-600 px-8 py-8 font-bold text-white shadow-sm ring-1 ring-amber-600 hover:bg-amber-500 hover:ring-amber-500"
-                                >
-                                    Play now!
-                                </a>
-                            </div>
-                        </div>
+        <div className="play">
+            <div className="columns-2 gap-2 bg-gradient-to-r from-indigo-800 to-[#910572] p-8 flex min-h-screen justify-center items-center">
+                <div className=" text-center ">
+                    <h1 className="text-6xl md:text-8xl drop-shadow-2xl">
+                        <Logo/>
+                    </h1>
+                    <h5 className="mt-8 text-xl text-white">
+                        <code>The decentralized lottery</code>
+                    </h5>
+                    <div className="mt-16">
+                        <a href="#"
+                           className="drop-shadow-2xl rounded-lg bg-amber-600 p-8 font-bold text-white shadow-sm ring-1 ring-amber-600 hover:bg-amber-500 hover:ring-amber-500"
+                        >
+                            <code>Play now!</code>
+                        </a>
                     </div>
                 </div>
-            </div>
-
-            {loading && <img src={logo} className="logo" alt="logo"/>}
-            <h2>Lottery Contract</h2>
-            <p>This contract is managed by {manager}.</p>
-            {winner && <p>The last winner was: {winner}</p>}
-            <p>There are currently {players.length} people competing to
-                win {web3.utils.fromWei(balance, 'ether')} ether!</p>
-
-            <hr/>
-
-            <form onSubmit={onSubmit}>
-                <h4>Want to try your luck?</h4>
-                <div style={{display: "flex", flexDirection: "column", maxWidth: 320, margin: "auto"}}>
-                    <label>Amount of ether to enter</label>
-                    <input type="number"
-                           value={value}
-                           onChange={event => setValue(event.target.value)}
-                    />
+                <div className="max-w-lg min-w-sm">
+                    <img src={etherCoin} alt="ethereum coin" className="drop-shadow-2xl"/>
                 </div>
-                <button type="submit">Enter</button>
-            </form>
+            </div>
+            <div className="bg-gradient-to-l from-indigo-900 to-[#910572]">
 
-            <hr/>
-            {accounts[0] === manager && (<>
-                <h4>Pick a winner!</h4>
-                <button onClick={onPickWinner}>Start</button>
-            </>)}
+
+                {loading && <img src={logo} className="logo" alt="logo"/>}
+                <h2>Lottery Contract</h2>
+                <p>This contract is managed by {manager}.</p>
+                {winner && <p>The last winner was: {winner}</p>}
+                <p>There are currently {players.length} people competing to
+                    win {web3.utils.fromWei(balance, 'ether')} ether!</p>
+
+                <hr/>
+
+                <form onSubmit={onSubmit}>
+                    <h4>Want to try your luck?</h4>
+                    <div style={{display: "flex", flexDirection: "column", maxWidth: 320, margin: "auto"}}>
+                        <label>Amount of ether to enter</label>
+                        <input type="number"
+                               value={value}
+                               onChange={event => setValue(event.target.value)}
+                        />
+                    </div>
+                    <button type="submit">Enter</button>
+                </form>
+
+                <hr/>
+                {accounts[0] === manager && (<>
+                    <h4>Pick a winner!</h4>
+                    <button onClick={onPickWinner}>Start</button>
+                </>)}
+            </div>
         </div>
     );
 }

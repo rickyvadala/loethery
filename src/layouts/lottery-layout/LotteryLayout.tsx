@@ -15,8 +15,8 @@ const LotteryLayout = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
-        <div className="bg-gradient-to-r from-indigo-900 to-[#910572] min-h-screen isolate">
-            <div className="bg-amber-500/75 px-6 py-6 lg:px-8">
+        <div className="lottery-layout isolate min-w-full">
+            <div className="bg-amber-500/75 p-6 fixed min-w-full">
                 <div>
                     <nav className="flex h-9 items-center justify-between" aria-label="Global">
                         <div className="flex lg:min-w-0 lg:flex-1 text-3xl font-bold" aria-label="Global">
