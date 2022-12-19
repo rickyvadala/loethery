@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import lottery from "../../web3/lottery";
 import {ethers} from "ethers";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import Logo from "../../components/atoms/logo/Logo";
+import {useContract} from "../../providers/ContractProvider";
 
 const Play = () => {
     const VALUE = '0.02'
@@ -11,47 +11,54 @@ const Play = () => {
     const [manager, setManager] = useState<string>('')
     const [winner, setWinner] = useState<string>('')
     const [balance, setBalance] = useState<string>('')
-    const {ethereum, connectedAccount} = useMetaMaskAccount()
+    const {connectedAccount, web3Provider} = useMetaMaskAccount()
+    const {contract} = useContract()
 
 
-    const fetchManager = async () => setManager(await lottery.methods.manager().call())
-    const fetchPlayers = async () => setPlayers(await lottery.methods.getPlayers().call())
-    const fetchWinner = async () => setWinner(await lottery.methods.winner().call())
+    const fetchManager = async () => setManager(await contract?.manager())
+    const fetchPlayers = async () => setPlayers(await contract?.getPlayers())
+    const fetchWinner = async () => setWinner(await contract?.winner())
     const fetchLotteryBalance = async () => {
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const lotteryBalance = await provider.getBalance(lottery.options.address)
-        setBalance(ethers.utils.formatEther(lotteryBalance))
+        if (web3Provider && contract) {
+            setBalance(ethers.utils.formatEther(await web3Provider.getBalance(contract.address)))
+        }
     }
 
     useEffect(() => {
-        if (ethereum) {
+        if (contract) {
             Promise.all([fetchWinner(), fetchManager(), fetchPlayers(), fetchLotteryBalance()])
                 .finally(() => setLoading(false))
         }
-    }, [ethereum]);
+    }, [contract]);
 
-    const onSubmit = async (event: React.SyntheticEvent) => {
-        try {
-            setLoading(true)
-            event.preventDefault()
-            await lottery.methods.enter().send({from: connectedAccount, value: ethers.utils.parseUnits(VALUE, 'ether')})
-            await Promise.all([fetchLotteryBalance(), fetchPlayers()])
-        } catch (e: any) {
-            alert(e.message)
-        } finally {
-            setLoading(false)
+    const onSubmit = async () => {
+        if (web3Provider) {
+            try {
+                setLoading(true)
+                await contract?.connect(web3Provider.getSigner()).enter({
+                    from: connectedAccount,
+                    value: ethers.utils.parseUnits(VALUE, 'ether')
+                })
+                await Promise.all([fetchLotteryBalance(), fetchPlayers()])
+            } catch (e: any) {
+                alert(e.message)
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
     const onPickWinner = async () => {
-        try {
-            setLoading(true)
-            await lottery.methods.pickWinner().send({from: connectedAccount})
-            await Promise.all([fetchLotteryBalance(), fetchPlayers(), fetchWinner()])
-        } catch (e: any) {
-            alert(e.message)
-        } finally {
-            setLoading(false)
+        if (web3Provider) {
+            try {
+                setLoading(true)
+                await contract?.connect(web3Provider.getSigner()).pickWinner({from: connectedAccount})
+                await Promise.all([fetchLotteryBalance(), fetchPlayers(), fetchWinner()])
+            } catch (e: any) {
+                alert(e.message)
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
