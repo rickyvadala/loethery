@@ -1,7 +1,7 @@
 import React from "react";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 
-const Logo = ({fontColor = "text-white", bracketsColor = "text-amber-500"}) => {
+export const Logo = ({fontColor = "text-white", bracketsColor = "text-amber-500"}) => {
     const navigate: NavigateFunction = useNavigate();
 
     return (
@@ -15,5 +15,3 @@ const Logo = ({fontColor = "text-white", bracketsColor = "text-amber-500"}) => {
         </span>
     )
 }
-
-export default Logo

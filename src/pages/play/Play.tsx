@@ -1,19 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {ethers} from "ethers";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
-import Logo from "../../components/atoms/logo/Logo";
+import {Logo} from "../../components/atoms/logo/Logo";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
 
-const Play = () => {
+export const Play = () => {
     const VALUE = '0.02'
     const [players, setPlayers] = useState<Array<any>>([])
     const [manager, setManager] = useState<string>('')
     const [winner, setWinner] = useState<string>('')
     const [balance, setBalance] = useState<string>('')
-    const {connectedAccount, web3Provider} = useMetaMaskAccount()
+    const [setLoading, setProgressLoading] = useOutletContext<any>();
+
+    const {connectedAccount, web3Provider} = useMetaMaskAccount();
     const {contract} = useContract();
-    const [setLoading] = useOutletContext<any>();
 
     const fetchManager = async () => setManager(await contract?.manager())
     const fetchPlayers = async () => setPlayers(await contract?.getPlayers())
@@ -40,12 +41,15 @@ const Play = () => {
                     from: connectedAccount,
                     value: ethers.utils.parseUnits(VALUE, 'ether')
                 })
+                setLoading(false)
+                setProgressLoading(true)
                 await enter.wait()
                 await Promise.all([fetchLotteryBalance(), fetchPlayers()])
             } catch ({message}) {
                 alert(message)
             } finally {
                 setLoading(false)
+                setProgressLoading(false)
             }
         }
     }
@@ -55,12 +59,15 @@ const Play = () => {
             try {
                 setLoading(true)
                 const pickWinner = await contract?.connect(web3Provider.getSigner()).pickWinner({from: connectedAccount})
+                setLoading(false)
+                setProgressLoading(true)
                 await pickWinner.wait()
                 await Promise.all([fetchLotteryBalance(), fetchPlayers(), fetchWinner()])
             } catch (e: any) {
                 alert(e.message)
             } finally {
                 setLoading(false)
+                setProgressLoading(false)
             }
         }
     }
@@ -93,10 +100,9 @@ const Play = () => {
                     <p>{manager}</p>
                 </div>
 
-                <hr className={"w-full"}/>
-
                 {Number(connectedAccount) === Number(manager) && (
                     <>
+                        <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
                         <a onClick={onPickWinner}
                            className="w-full flex items-center cursor-pointer justify-center drop-shadow-2xl rounded-lg bg-amber-500 p-6 font-bold text-white shadow-sm ring-1 ring-amber-500 hover:bg-amber-400 hover:ring-amber-400"
@@ -106,9 +112,6 @@ const Play = () => {
                     </>
                 )}
             </div>
-
         </div>
     );
 }
-
-export default Play;

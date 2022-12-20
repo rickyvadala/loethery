@@ -1,9 +1,9 @@
 import {NavigateFunction, useNavigate} from "react-router-dom";
-import Logo from "../../components/atoms/logo/Logo";
+import {Logo} from "../../components/atoms/logo/Logo";
 import etherCoin from "../../assets/img/ether-coin.png";
 import React from "react";
 
-const Connect = () => {
+export const Connect = () => {
     const navigate: NavigateFunction = useNavigate();
     return (
         <div
@@ -29,5 +29,3 @@ const Connect = () => {
         </div>
     );
 }
-
-export default Connect;

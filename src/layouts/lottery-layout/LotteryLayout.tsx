@@ -1,25 +1,31 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import {Dialog} from '@headlessui/react'
 import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline'
-import {NavigateFunction, Outlet, useNavigate} from "react-router-dom";
-import Logo from "../../components/atoms/logo/Logo";
-import {Spinner} from "../../components/atoms/spinner/Spinner";
+import {NavigateFunction, Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Logo} from "../../components/atoms/logo/Logo";
+import {Loader} from "../../components/atoms/loader/Loader";
+import {ProgressBar} from "../../components/atoms/progress-bar/ProgressBar";
+import etherCoin from "../../assets/img/ether-coin.png";
 
 const navigation = [
     {name: 'Home', url: '/'},
     {name: 'Play', url: '/play'},
-    {name: 'About', url: '/about'},
+    {name: 'Contract', url: '/contract'},
     {name: 'Social', url: '/social'},
 ]
 
 const LotteryLayout = () => {
+    const location = useLocation();
     const [loading, setLoading] = useState<boolean>(false)
+    const [progressLoading, setProgressLoading] = useState<boolean>(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate: NavigateFunction = useNavigate();
 
     return (
         <div className="lottery-layout isolate">
-            <div className="z-20 bg-amber-500 p-6 fixed min-w-full ">
+            <div className="z-50 bg-amber-500 px-8 py-6 fixed min-w-full ">
+                <Loader loading={loading}/>
+                <ProgressBar progressLoading={progressLoading}/>
                 <div>
                     <nav className="flex h-9 items-center justify-between" aria-label="Global">
                         <div className="flex lg:min-w-0 lg:flex-1 text-3xl font-bold" aria-label="Global">
@@ -52,7 +58,7 @@ const LotteryLayout = () => {
                     </nav>
                     <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
                         <Dialog.Panel
-                            className="fixed inset-0 z-20 overflow-y-auto bg-gradient-to-r from-indigo-900 to-[#910572] px-6 py-6 lg:hidden">
+                            className="fixed inset-0 z-20 overflow-y-auto bg-gradient-to-r from-indigo-900 to-[#910572] px-8 py-6 lg:hidden">
                             <div className="flex h-9 items-center justify-between">
                                 <div className="flex text-3xl">
                                     <Logo/>
@@ -73,8 +79,11 @@ const LotteryLayout = () => {
                                     <div className="space-y-2 py-6">
                                         {navigation.map((item) => (
                                             <a key={item.name}
-                                               onClick={() => navigate(item.url)}
                                                className="cursor-pointer -mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-white hover:bg-gray-400/10"
+                                               onClick={() => {
+                                                   navigate(item.url)
+                                                   setMobileMenuOpen(false)
+                                               }}
                                             >
                                                 {item.name}
                                             </a>
@@ -94,9 +103,18 @@ const LotteryLayout = () => {
                     </Dialog>
                 </div>
             </div>
-            <main className="bg-gradient-to-r from-indigo-800 to-[#910572]">
-                <Spinner loading={loading}/>
-                <Outlet context={[setLoading]}/>
+            <main className="bg-gradient-to-r from-indigo-800 to-[#910572] relative">
+                {location.pathname !== '/' &&
+                  <>
+                    <div className="z-0 max-w-md min-w-sm absolute opacity-20 right-0 top-24">
+                      <img src={etherCoin} alt="ethereum coin" className="drop-shadow-2xl"/>
+                    </div>
+                    <div className="z-0 max-w-md min-w-sm absolute opacity-20 left-4 bottom-12">
+                      <img src="/meta-fox.svg" alt="ethereum coin" className="w-full drop-shadow-2xl"/>
+                    </div>
+                  </>
+                }
+                <Outlet context={[setLoading, setProgressLoading]}/>
             </main>
         </div>
     )
