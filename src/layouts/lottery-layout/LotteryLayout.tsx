@@ -114,7 +114,7 @@ const LotteryLayout = () => {
                     </div>
                   </>
                 }
-                <Outlet context={[setLoading, setProgressLoading]}/>
+                <Outlet context={[setLoading, progressLoading, setProgressLoading]}/>
             </main>
         </div>
     )

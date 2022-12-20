@@ -4,17 +4,26 @@ import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Logo} from "../../components/atoms/logo/Logo";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
+import {Action} from "../../components/atoms/action/Action";
+import {Dialog, DialogType} from "../../components/atoms/dialog/Dialog";
 
 export const Play = () => {
-    const VALUE = '0.02'
+    const value = ethers.utils.parseUnits('0.02', 'ether')
     const [players, setPlayers] = useState<Array<any>>([])
-    const [manager, setManager] = useState<string>('')
-    const [winner, setWinner] = useState<string>('')
-    const [balance, setBalance] = useState<string>('')
-    const [setLoading, setProgressLoading] = useOutletContext<any>();
+    const [manager, setManager] = useState<string>('0x0000000000000000000000000000000000000000')
+    const [winner, setWinner] = useState<string>('0x0000000000000000000000000000000000000000')
+    const [balance, setBalance] = useState<string>('0')
 
-    const {connectedAccount, web3Provider} = useMetaMaskAccount();
+    const [setLoading, progressLoading, setProgressLoading] = useOutletContext<any>();
+    const {ethereum, accountConnected: from, web3Provider} = useMetaMaskAccount();
     const {contract} = useContract();
+
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [dialog, setDialog] = useState<DialogType>({isOpen, setIsOpen, timeout: 3000, closeOnBlur: true})
+    const openDialog = (message: Array<any>, title: string) => {
+        setIsOpen(true)
+        setDialog((prevState: DialogType) => ({...prevState, message, title}))
+    }
 
     const fetchManager = async () => setManager(await contract?.manager())
     const fetchPlayers = async () => setPlayers(await contract?.getPlayers())
@@ -34,13 +43,10 @@ export const Play = () => {
     }, [contract]);
 
     const onPlay = async () => {
-        if (web3Provider) {
+        if (web3Provider && from) {
             try {
                 setLoading(true)
-                const enter = await contract?.connect(web3Provider.getSigner()).enter({
-                    from: connectedAccount,
-                    value: ethers.utils.parseUnits(VALUE, 'ether')
-                })
+                const enter = await contract?.connect(web3Provider.getSigner()).enter({from, value})
                 setLoading(false)
                 setProgressLoading(true)
                 await enter.wait()
@@ -51,14 +57,16 @@ export const Play = () => {
                 setLoading(false)
                 setProgressLoading(false)
             }
+        } else {
+
         }
     }
 
     const onPickWinner = async () => {
-        if (web3Provider) {
+        if (web3Provider && from) {
             try {
                 setLoading(true)
-                const pickWinner = await contract?.connect(web3Provider.getSigner()).pickWinner({from: connectedAccount})
+                const pickWinner = await contract?.connect(web3Provider.getSigner()).pickWinner({from})
                 setLoading(false)
                 setProgressLoading(true)
                 await pickWinner.wait()
@@ -69,6 +77,8 @@ export const Play = () => {
                 setLoading(false)
                 setProgressLoading(false)
             }
+        } else {
+
         }
     }
 
@@ -84,11 +94,7 @@ export const Play = () => {
                     <p className="text-4xl font-bold">{balance} ether!</p>
                   </div>
                 }
-                <a onClick={onPlay}
-                   className="w-full flex items-center cursor-pointer justify-center drop-shadow-2xl rounded-lg bg-amber-500 p-6 font-bold text-white shadow-sm ring-1 ring-amber-500 hover:bg-amber-400 hover:ring-amber-400"
-                >
-                    <code>Play now!</code>
-                </a>
+                <Action disabled={progressLoading} onClick={onPlay} label={'Play now!'}/>
                 {winner &&
                   <div className={"break-all"}>
                     <p className={"mb-2"}>The last winner was:</p>
@@ -100,18 +106,15 @@ export const Play = () => {
                     <p>{manager}</p>
                 </div>
 
-                {Number(connectedAccount) === Number(manager) && (
+                {Number(from) === Number(manager) && (
                     <>
                         <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
-                        <a onClick={onPickWinner}
-                           className="w-full flex items-center cursor-pointer justify-center drop-shadow-2xl rounded-lg bg-amber-500 p-6 font-bold text-white shadow-sm ring-1 ring-amber-500 hover:bg-amber-400 hover:ring-amber-400"
-                        >
-                            <code>Start</code>
-                        </a>
+                        <Action disabled={progressLoading} onClick={onPickWinner} label={'Start'}/>
                     </>
                 )}
             </div>
+            <Dialog {...dialog}/>
         </div>
     );
 }

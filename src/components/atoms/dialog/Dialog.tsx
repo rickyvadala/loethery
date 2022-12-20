@@ -2,19 +2,21 @@ import React, { Fragment } from 'react'
 import { Dialog as HeadlessUIDialog, Transition } from '@headlessui/react'
 
 export type DialogType = {
-    title?: string,
-    message?: string,
     isOpen: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsOpen: Function,
     timeout?: number
+    title?: string,
+    message?: Array<any>,
+    closeOnBlur?: boolean
 }
 
-export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, title, message }) => {
+export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, title = 'Please', message, closeOnBlur }) => {
     timeout && setTimeout(() => setIsOpen(false), timeout)
+    const onClose = () => closeOnBlur && setIsOpen(false)
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
-            <HeadlessUIDialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
+            <HeadlessUIDialog as="div" className="relative z-50" onClose={onClose}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -41,12 +43,12 @@ export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, titl
                             <HeadlessUIDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                                 <HeadlessUIDialog.Title
                                     as="h3"
-                                    className="text-lg font-medium leading-6 text-gray-900"
+                                    className="text-xl font-medium leading-6 text-gray-900"
                                 >
                                     {title}
                                 </HeadlessUIDialog.Title>
                                 <div className="mt-2">
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-md text-gray-500">
                                         {message}
                                     </p>
                                 </div>
@@ -54,7 +56,7 @@ export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, titl
                                 <div className="mt-4">
                                     <button
                                         type="button"
-                                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-md font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         onClick={() => setIsOpen(false)}
                                     >
                                         Ok
