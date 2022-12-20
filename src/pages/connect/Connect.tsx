@@ -5,7 +5,6 @@ import React from "react";
 
 const Connect = () => {
     const navigate: NavigateFunction = useNavigate();
-
     return (
         <div
             className="columns-2 gap-2 flex justify-center items-center min-h-screen p-8 pt-24">

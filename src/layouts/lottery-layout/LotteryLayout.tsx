@@ -3,6 +3,7 @@ import {Dialog} from '@headlessui/react'
 import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline'
 import {NavigateFunction, Outlet, useNavigate} from "react-router-dom";
 import Logo from "../../components/atoms/logo/Logo";
+import {Spinner} from "../../components/atoms/spinner/Spinner";
 
 const navigation = [
     {name: 'Home', url: '/'},
@@ -12,6 +13,7 @@ const navigation = [
 ]
 
 const LotteryLayout = () => {
+    const [loading, setLoading] = useState<boolean>(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate: NavigateFunction = useNavigate();
 
@@ -35,7 +37,7 @@ const LotteryLayout = () => {
                         <div className="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:gap-x-12">
                             {navigation.map((item) => (
                                 <a key={item.name} onClick={() => navigate(item.url)}
-                                   className="font-semibold text-white hover:text-gray-900">
+                                   className="cursor-pointer font-semibold text-white hover:text-gray-900">
                                     {item.name}
                                 </a>
                             ))}
@@ -72,7 +74,7 @@ const LotteryLayout = () => {
                                         {navigation.map((item) => (
                                             <a key={item.name}
                                                onClick={() => navigate(item.url)}
-                                               className="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-white hover:bg-gray-400/10"
+                                               className="cursor-pointer -mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-white hover:bg-gray-400/10"
                                             >
                                                 {item.name}
                                             </a>
@@ -93,7 +95,8 @@ const LotteryLayout = () => {
                 </div>
             </div>
             <main className="bg-gradient-to-r from-indigo-800 to-[#910572]">
-                <Outlet/>
+                <Spinner loading={loading}/>
+                <Outlet context={[setLoading]}/>
             </main>
         </div>
     )

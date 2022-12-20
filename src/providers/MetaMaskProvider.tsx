@@ -25,7 +25,6 @@ type ProviderProps = {
 const MetaMaskAccountProvider = ({children}: ProviderProps) => {
     const [ethereum, setEthereum] = useState<any>(null);
     const [web3Provider, setWeb3Provider] = useState<Web3Provider>();
-    // const [web3Signer, setWeb3Signer] = useState<>();
     const [accounts, setAccounts] = useState<Array<any>>([])
     const [connectedAccount, setConnectedAccount] = useState<MetaMaskContextTypes['connectedAccount']>('');
     const [balance, setBalance] = useState<MetaMaskContextTypes['accountBalance']>();
@@ -39,6 +38,7 @@ const MetaMaskAccountProvider = ({children}: ProviderProps) => {
 
             // Reload if account changes
             window.ethereum.on('accountsChanged', (accounts: Array<string>) => {
+                debugger
                 setAccounts(accounts)
             });
 
@@ -46,19 +46,25 @@ const MetaMaskAccountProvider = ({children}: ProviderProps) => {
             if (chainId === ChainEnum.GOERLI_TEST_NETWORK) {
                 const provider = new ethers.providers.Web3Provider(window.ethereum)
                 setWeb3Provider(provider)
-                // setWeb3Signer(provider.getSigner())
                 setEthereum(window.ethereum);
             } else {
-                setError({title: 'Attention', message: 'Please use Goerli testnet'})
-                setIsOpen(true)
+                alert('Please use Goerli testnet')
             }
+        } else {
+            alert('Install metamask')
         }
     }
 
     const fetchAccounts = async () => {
         if (ethereum) {
-            const accounts = await ethereum.request({method: 'eth_accounts'});
-            setAccounts(accounts)
+            try {
+                const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+                setAccounts(accounts)
+            } catch ({code, message}) {
+                code === -32002
+                    ? alert('Please open MetaMask and LogIn')
+                    : alert(message)
+            }
         }
     };
 
