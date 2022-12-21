@@ -6,7 +6,7 @@ import MetaMaskAccountProvider from "./providers/MetaMaskProvider";
 import ContractProvider from "./providers/ContractProvider";
 import {LotteryLayout} from "./layouts/lottery-layout/LotteryLayout";
 import {Play} from "./pages/play/Play";
-import {Contract} from "./pages/contract/Contract";
+import {Code} from "./pages/code/Code";
 import {Connect} from "./pages/connect/Connect";
 
 const router = createBrowserRouter([
@@ -23,10 +23,10 @@ const router = createBrowserRouter([
                 element: <Play/>,
             },
             {
-                path: 'contract',
-                element: <Contract/>,
+                path: 'code',
+                element: <Code/>,
             }
-        ]
+        ],
     },
 ]);
 
@@ -34,7 +34,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <MetaMaskAccountProvider>
             <ContractProvider>
-                <RouterProvider router={router}/>
+                <RouterProvider router={router} />
             </ContractProvider>
         </MetaMaskAccountProvider>
     </React.StrictMode>,
