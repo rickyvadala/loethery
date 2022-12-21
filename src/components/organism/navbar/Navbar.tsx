@@ -3,6 +3,7 @@ import {Logo} from "../../atoms/logo/Logo";
 import {Bars3Icon, CheckCircleIcon, XCircleIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import {Dialog as MobileMenu} from '@headlessui/react'
 import {NavbarItemType} from "../../../layouts/lottery-layout/LotteryLayout";
+import {Social} from "../../atoms/social/Social";
 
 type NavbarType = {
     navigation: NavbarItemType[],
@@ -21,7 +22,8 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                     </div>
                     <div className="hidden lg:flex flex-1 justify-center gap-x-6 text-lg">
                         {navigation.map((item) => (
-                            <a key={item.name} onClick={() => item.function()}
+                            <a key={item.name}
+                               onClick={() => item.function()}
                                className="cursor-pointer block rounded-lg py-2 px-3 text-base font-semibold text-white hover:bg-indigo-800"
                             >
                                 {item.name}
@@ -85,7 +87,7 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                                     </a>
                                 ))}
                             </div>
-                            <div className="py-6">
+                            <div className="py-6 mb-8">
                                 {checkers.map(item => (
                                     <span key={item.name}
                                           onClick={() => openDialog()}
@@ -98,6 +100,7 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                                     </span>
                                 ))}
                             </div>
+                            <Social/>
                         </div>
                     </div>
                 </MobileMenu.Panel>

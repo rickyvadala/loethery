@@ -36,8 +36,6 @@ const ContractProvider = ({children}: ProviderProps) => {
     )
 }
 
-export const useContract = () => {
-    return useContext(ContractContext);
-}
+export const useContract = () => useContext(ContractContext)
 
 export default ContractProvider;

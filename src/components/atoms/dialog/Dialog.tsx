@@ -11,13 +11,13 @@ export type DialogType = {
 }
 const defaultTitle = 'Anonymous friend!'
 const defaultMessage: any[] = [
-    <p>To play follow the next steps:</p>,
-    <p>1. Install <a className="font-bold" href="https://metamask.io/" target="_blank">MetaMask</a></p>,
-    <p>2. Connect or create an account</p>,
-    <p>3. Select the Goerli Testnet</p>,
-    <p>4. Get Goerli ETH from <a className="font-bold" href="https://goerlifaucet.com/" target="_blank">this faucet</a>
+    <p key="0">To play follow the next steps:</p>,
+    <p key="1">1. Install <a className="font-bold" href="https://metamask.io/" target="_blank">MetaMask</a></p>,
+    <p key="2">2. Connect or create an account</p>,
+    <p key="3">3. Select the Goerli Testnet</p>,
+    <p key="4">4. Get Goerli ETH from <a className="font-bold" href="https://goerlifaucet.com/" target="_blank">this faucet</a>
     </p>,
-    <p>5. Have fun :)</p>
+    <p key="5">5. Have fun :)</p>
 ];
 
 export const Dialog = ({isOpen, setIsOpen, timeout, title = defaultTitle, message = defaultMessage, closeOnBlur}

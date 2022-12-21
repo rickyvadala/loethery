@@ -14,7 +14,7 @@ export const Code = () => {
             </h1>
             <div className={"z-20 flex flex-col items-center justify-center text-xl mb-4"}>
                 <code>To see all the codebase, check the repo!</code>
-                <a className={" rounded-full hover:bg-amber-500 w-[48px]"}
+                <a className={" rounded-full hover:bg-amber-500 w-[48px] mt-2"}
                    href="https://github.com/rickyvadala"
                    target="_blank">
                     <Github color='#fff' size={48}/>

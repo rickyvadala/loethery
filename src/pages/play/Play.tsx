@@ -13,7 +13,7 @@ export const Play = () => {
     const [balance, setBalance] = useState<string>('0')
 
     const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
-    const {accountConnected: from, web3Provider} = useMetaMaskAccount();
+    const {accountConnected, web3Provider, chainValid} = useMetaMaskAccount();
     const {contract} = useContract();
     const value = ethers.utils.parseUnits('0.02', 'ether')
 
@@ -27,15 +27,15 @@ export const Play = () => {
     }
 
     useEffect(() => {
-        if (contract) {
+        if (contract && chainValid) {
             setLoading(true)
             Promise.all([fetchWinner(), fetchManager(), fetchPlayers(), fetchLotteryBalance()])
                 .finally(() => setLoading(false))
         }
-    }, [contract]);
+    }, [contract, accountConnected]);
 
     const onTransaction = async (name: string, params: {}) => {
-        if (web3Provider && from) {
+        if (web3Provider && accountConnected) {
             try {
                 setLoading(true)
                 const transaction = await contract?.connect(web3Provider.getSigner())[name](params)
@@ -57,7 +57,7 @@ export const Play = () => {
             <h1 className="my-12 text-5xl sm:text-7xl lg:text-8xl drop-shadow-2xl w-full flex items-center justify-center">
                 <Logo/>
             </h1>
-            <div className={`text-xl sm:text-2xl text-white flex flex-wrap gap-8 max-w-xl ${disabled && 'blur-sm'}`}>
+            <div className={`text-xl sm:text-2xl text-white flex flex-wrap gap-8 max-w-xl`}>
                 {!!players.length &&
                   <div>
                     <p className="mb-2">There are currently {players.length} people competing to win:</p>
@@ -65,7 +65,7 @@ export const Play = () => {
                   </div>
                 }
                 <Action disabled={disabled}
-                        onClick={() => onTransaction('enter', {from, value})}
+                        onClick={() => onTransaction('enter', {from: accountConnected, value})}
                         label={'Play now!'}/>
                 {winner &&
                   <div className={"break-all"}>
@@ -78,12 +78,12 @@ export const Play = () => {
                     <p>{manager}</p>
                 </div>
 
-                {Number(from) === Number(manager) && (
+                {Number(accountConnected) === Number(manager) && (
                     <>
                         <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
                         <Action disabled={disabled}
-                                onClick={() => onTransaction('pickWinner', {from})}
+                                onClick={() => onTransaction('pickWinner', {from: accountConnected})}
                                 label={'Start'}
                         />
                     </>

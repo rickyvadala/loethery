@@ -4,7 +4,6 @@ import {Loader} from "../../components/atoms/loader/Loader";
 import {ProgressBar} from "../../components/atoms/progress-bar/ProgressBar";
 import etherCoin from "../../assets/img/ether-coin.png";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
-import {ChainEnum} from "../../utils/enums/ChainEnum";
 import {Dialog, DialogType} from "../../components/atoms/dialog/Dialog";
 import {Navbar} from "../../components/organism/navbar/Navbar";
 import {Footer} from "../../components/organism/footer/Footer";
@@ -16,7 +15,7 @@ export const LotteryLayout = () => {
 
     const [loading, setLoading] = useState<boolean>(false)
     const [progressLoading, setProgressLoading] = useState<boolean>(false)
-    const {ethereum, chain, accountConnected} = useMetaMaskAccount();
+    const {chainValid, accountConnected} = useMetaMaskAccount();
 
     const [disabled, setDisabled] = useState<boolean>(true)
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -27,8 +26,8 @@ export const LotteryLayout = () => {
     }
 
     useEffect(() => {
-        setDisabled(!(accountConnected && chain === ChainEnum.GOERLI_TEST_NETWORK && !progressLoading))
-    }, [progressLoading, accountConnected, chain])
+        setDisabled(!(accountConnected && chainValid && !progressLoading))
+    }, [progressLoading, accountConnected, chainValid])
 
     useEffect(() => {
         !window.ethereum && openDialog()
@@ -43,8 +42,8 @@ export const LotteryLayout = () => {
     ]
 
     const checkers: NavbarItemType[] = [
-        {name: 'MetaMask', function: () => ethereum},
-        {name: 'Network', function: () => chain === ChainEnum.GOERLI_TEST_NETWORK},
+        {name: 'MetaMask', function: () => window.ethereum},
+        {name: 'Network', function: () => chainValid},
         {name: 'Wallet', function: () => accountConnected},
     ]
 
@@ -56,7 +55,8 @@ export const LotteryLayout = () => {
                 <ProgressBar progressLoading={progressLoading}/>
                 <Navbar navigation={navigation} checkers={checkers} openDialog={openDialog}/>
             </div>
-            <main className="bg-gradient-to-r from-indigo-800 to-[#910572] relative pb-12">
+            <main className={`
+            ${location.pathname === '/play' && !(accountConnected && chainValid) && 'blur-sm'} bg-gradient-to-r from-indigo-800 to-[#910572] relative pb-12`}>
                 {location.pathname !== '/' &&
                   <>
                     <div className="z-0 max-w-md min-w-sm absolute opacity-20 right-0 top-24">
@@ -69,7 +69,7 @@ export const LotteryLayout = () => {
                 }
                 <Outlet context={[setLoading, setProgressLoading, disabled]}/>
             </main>
-            <Footer navigation={navigation} />
+            <Footer/>
         </div>
     )
 }

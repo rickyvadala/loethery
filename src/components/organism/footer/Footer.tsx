@@ -1,5 +1,5 @@
 import React from "react";
-import {Github, Instagram, Linkedin} from '@icons-pack/react-simple-icons';
+import {Social} from "../../atoms/social/Social";
 
 export const Footer: React.FC = () => {
     return (
@@ -8,29 +8,12 @@ export const Footer: React.FC = () => {
                 <div className={"absolute w-full -top-10 flex justify-center"}>
                     <div
                         className={"flex flex-col justify-center text-lg text-white bg-indigo-900 max-w-md p-8 rounded-xl shadow-xl"}>
-                        <code>Developed with <span className={"animate-pulse"}>♥</span> by&nbsp;
+                        <code>Developed with <span className={"text-xl animate-pulse text-red-500"}>♥</span> by&nbsp;
                             <a className={"hover:bg-amber-500 font-bold"} target="_blank"
                                href="https://www.rickyvadala.com/">@rickyvadala</a>
                         </code>
                         <hr className={"my-4 h-2 w-full"}/>
-                        <div className={"flex justify-center gap-8"}>
-                            <a className={"rounded-full hover:bg-amber-500"}
-                               href="https://github.com/rickyvadala"
-                               target="_blank">
-                                <Github color='#fff' size={36}/>
-                            </a>
-                            <a className={"rounded-full hover:bg-amber-500"}
-                               href="https://www.linkedin.com/in/ricardovadala/"
-                               target="_blank">
-                                <Linkedin color='#fff' size={36}/>
-                            </a>
-                            <a className={"rounded-full hover:bg-amber-500"}
-                               href="https://www.instagram.com/rickyvadala/"
-                               target="_blank">
-                                <Instagram color='#fff' size={36}/>
-                            </a>
-                        </div>
-
+                        <Social/>
                     </div>
                 </div>
             </div>
