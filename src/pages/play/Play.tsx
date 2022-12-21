@@ -5,25 +5,17 @@ import {Logo} from "../../components/atoms/logo/Logo";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
-import {Dialog, DialogType} from "../../components/atoms/dialog/Dialog";
 
 export const Play = () => {
-    const value = ethers.utils.parseUnits('0.02', 'ether')
     const [players, setPlayers] = useState<Array<any>>([])
     const [manager, setManager] = useState<string>('0x0000000000000000000000000000000000000000')
     const [winner, setWinner] = useState<string>('0x0000000000000000000000000000000000000000')
     const [balance, setBalance] = useState<string>('0')
 
-    const [setLoading, progressLoading, setProgressLoading] = useOutletContext<any>();
-    const {ethereum, accountConnected: from, web3Provider} = useMetaMaskAccount();
+    const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
+    const {accountConnected: from, web3Provider} = useMetaMaskAccount();
     const {contract} = useContract();
-
-    const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [dialog, setDialog] = useState<DialogType>({isOpen, setIsOpen, timeout: 3000, closeOnBlur: true})
-    const openDialog = (message: Array<any>, title: string) => {
-        setIsOpen(true)
-        setDialog((prevState: DialogType) => ({...prevState, message, title}))
-    }
+    const value = ethers.utils.parseUnits('0.02', 'ether')
 
     const fetchManager = async () => setManager(await contract?.manager())
     const fetchPlayers = async () => setPlayers(await contract?.getPlayers())
@@ -42,34 +34,14 @@ export const Play = () => {
         }
     }, [contract]);
 
-    const onPlay = async () => {
+    const onTransaction = async (name: string, params: {}) => {
         if (web3Provider && from) {
             try {
                 setLoading(true)
-                const enter = await contract?.connect(web3Provider.getSigner()).enter({from, value})
+                const transaction = await contract?.connect(web3Provider.getSigner())[name](params)
                 setLoading(false)
                 setProgressLoading(true)
-                await enter.wait()
-                await Promise.all([fetchLotteryBalance(), fetchPlayers()])
-            } catch ({message}) {
-                alert(message)
-            } finally {
-                setLoading(false)
-                setProgressLoading(false)
-            }
-        } else {
-
-        }
-    }
-
-    const onPickWinner = async () => {
-        if (web3Provider && from) {
-            try {
-                setLoading(true)
-                const pickWinner = await contract?.connect(web3Provider.getSigner()).pickWinner({from})
-                setLoading(false)
-                setProgressLoading(true)
-                await pickWinner.wait()
+                await transaction.wait()
                 await Promise.all([fetchLotteryBalance(), fetchPlayers(), fetchWinner()])
             } catch (e: any) {
                 alert(e.message)
@@ -77,8 +49,6 @@ export const Play = () => {
                 setLoading(false)
                 setProgressLoading(false)
             }
-        } else {
-
         }
     }
 
@@ -87,14 +57,16 @@ export const Play = () => {
             <h1 className="my-12 text-5xl sm:text-7xl lg:text-8xl drop-shadow-2xl w-full flex items-center justify-center">
                 <Logo/>
             </h1>
-            <div className="text-xl sm:text-2xl text-white flex flex-wrap gap-8 max-w-xl">
+            <div className={`text-xl sm:text-2xl text-white flex flex-wrap gap-8 max-w-xl ${disabled && 'blur-sm'}`}>
                 {!!players.length &&
                   <div>
                     <p className="mb-2">There are currently {players.length} people competing to win:</p>
                     <p className="text-4xl font-bold">{balance} ether!</p>
                   </div>
                 }
-                <Action disabled={progressLoading} onClick={onPlay} label={'Play now!'}/>
+                <Action disabled={disabled}
+                        onClick={() => onTransaction('enter', {from, value})}
+                        label={'Play now!'}/>
                 {winner &&
                   <div className={"break-all"}>
                     <p className={"mb-2"}>The last winner was:</p>
@@ -110,11 +82,13 @@ export const Play = () => {
                     <>
                         <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
-                        <Action disabled={progressLoading} onClick={onPickWinner} label={'Start'}/>
+                        <Action disabled={disabled}
+                                onClick={() => onTransaction('pickWinner', {from})}
+                                label={'Start'}
+                        />
                     </>
                 )}
             </div>
-            <Dialog {...dialog}/>
         </div>
     );
 }

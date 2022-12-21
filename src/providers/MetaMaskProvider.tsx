@@ -1,18 +1,19 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {ethers} from "ethers";
-import {Dialog, DialogType} from "../components/atoms/dialog/Dialog";
 import {ChainEnum} from "../utils/enums/ChainEnum";
 import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
 type MetaMaskContextTypes = {
     ethereum: any;
+    chain: ChainEnum | undefined;
     web3Provider: Web3Provider | undefined;
     accountConnected: string;
     accountBalance: string | undefined;
 };
 
 const MetaMaskAccountContext = createContext<MetaMaskContextTypes>({
-    ethereum: null,
+    ethereum: undefined,
+    chain: undefined,
     web3Provider: undefined,
     accountConnected: '',
     accountBalance: '',
@@ -23,72 +24,38 @@ type ProviderProps = {
 };
 
 const MetaMaskAccountProvider = ({children}: ProviderProps) => {
-    const [ethereum, setEthereum] = useState<any>(null);
+    const [ethereum, setEthereum] = useState<any>();
+    const [chain, setChain] = useState<ChainEnum>();
     const [web3Provider, setWeb3Provider] = useState<Web3Provider>();
     const [accounts, setAccounts] = useState<Array<any>>([])
     const [accountConnected, setAccountConnected] = useState<MetaMaskContextTypes['accountConnected']>('');
-    const [balance, setBalance] = useState<MetaMaskContextTypes['accountBalance']>();
-
-    // Dialog management
-    const reload = () => window.location.reload()
-    const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [dialog, setDialog] = useState<DialogType>({isOpen, setIsOpen: reload})
-    const openDialog = (message: Array<any>) => {
-        setIsOpen(true)
-        setDialog((prevState: DialogType) => ({
-            ...prevState,
-            message
-        }))
-    }
+    const [accountBalance, setAccountBalance] = useState<MetaMaskContextTypes['accountBalance']>();
 
     const initEthereum = async () => {
         if (window.ethereum) {
             // Reload if chain changes
-            window.ethereum.on('chainChanged', () => reload());
+            window.ethereum.on('chainChanged', () => window.location.reload());
             // Reload if account changes
             window.ethereum.on('accountsChanged', (accounts: Array<string>) => setAccounts(accounts));
 
-            const chainId = await window.ethereum.request({method: 'eth_chainId'});
-            if (chainId === ChainEnum.GOERLI_TEST_NETWORK) {
-                const provider = new ethers.providers.Web3Provider(window.ethereum)
-                setWeb3Provider(provider)
-                setEthereum(window.ethereum);
-            } else {
-                openDialog([
-                    'Use the Goerli testnet, here is a faucet to claim ',
-                    <a className="text-indigo-800 font-bold"
-                       href="https://goerlifaucet.com/"
-                       target="_blank">Goerli ETH Tokens</a>,
-                ])
-            }
-        } else {
-            openDialog([
-                'Install ',
-                <a className="text-indigo-800 font-bold" href="https://metamask.io/" target="_blank">MetaMask</a>,
-                ' and then reload the page.'
-            ])
+            setChain(await window.ethereum.request({method: 'eth_chainId'}))
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            setWeb3Provider(provider)
+            setEthereum(window.ethereum);
         }
     }
 
     const fetchAccounts = async () => {
         if (ethereum) {
-            try {
-                const accounts = await ethereum.request({method: 'eth_requestAccounts'});
-                setAccounts(accounts)
-            } catch ({code, message}) {
-                if (code === -32002) {
-                    openDialog(['Open MetaMask and login.'])
-                } else {
-                    alert(message)
-                }
-            }
+            const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+            setAccounts(accounts)
         }
     };
 
     const fetchAccountBalance = async () => {
         if (ethereum && accountConnected && web3Provider) {
             const ethBalance = await web3Provider.getBalance(accountConnected)
-            setBalance(ethers.utils.formatEther(ethBalance))
+            setAccountBalance(ethers.utils.formatEther(ethBalance))
         }
     };
 
@@ -106,20 +73,20 @@ const MetaMaskAccountProvider = ({children}: ProviderProps) => {
             void fetchAccountBalance()
         } else {
             setAccountConnected('')
-            setBalance('')
+            setAccountBalance('')
         }
     }, [accounts]);
 
     const value = {
         ethereum,
+        chain,
         web3Provider,
         accountConnected,
-        accountBalance: balance,
+        accountBalance,
     };
 
     return (
         <MetaMaskAccountContext.Provider value={value}>
-            <Dialog {...dialog}/>
             {children}
         </MetaMaskAccountContext.Provider>
     )

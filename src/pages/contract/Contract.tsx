@@ -7,16 +7,16 @@ import {ChainEnum} from "../../utils/enums/ChainEnum";
 
 export const Contract = () => {
     return (
-        <div className="flex justify-center flex-wrap min-h-screen p-8 pt-24 text-white">
+        <div className="flex items-center flex-col min-h-screen p-8 pt-24 text-white text-md">
             <h1 className="z-20 w-full my-12 text-5xl sm:text-7xl lg:text-8xl drop-shadow-2xl w-full flex items-center justify-center">
                 <Logo/>
             </h1>
-            <code className={"z-20 flex justify-left w-full max-w-screen-md"}>Solidity contract</code>
-            <code className={"z-20 flex justify-left w-full max-w-screen-md"}>Address: {address}</code>
+            <code className={"z-20 flex justify-left w-full max-w-screen-md font-bold"}>Solidity Contract</code>
+            <code className={"z-20 flex justify-left w-full max-w-screen-md break-all"}>Address: {address}</code>
             <code className={"z-20 flex justify-left w-full max-w-screen-md"}>Network: Goerli Testnet
                 (ChainID: {ChainEnum.GOERLI_TEST_NETWORK})
             </code>
-            <SyntaxHighlighter className={"z-20 max-w-screen-md w-full"} language="javascript" style={vscDarkPlus}>
+            <SyntaxHighlighter className={"z-20 max-w-screen-md w-full"} showLineNumbers={true} language="javascript" style={vscDarkPlus}>
                 {contract}
             </SyntaxHighlighter>
         </div>

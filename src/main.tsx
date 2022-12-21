@@ -2,9 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import LotteryLayout from "./layouts/lottery-layout/LotteryLayout";
 import MetaMaskAccountProvider from "./providers/MetaMaskProvider";
 import ContractProvider from "./providers/ContractProvider";
+import {LotteryLayout} from "./layouts/lottery-layout/LotteryLayout";
 import {Play} from "./pages/play/Play";
 import {Contract} from "./pages/contract/Contract";
 import {Connect} from "./pages/connect/Connect";

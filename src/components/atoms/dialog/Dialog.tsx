@@ -1,16 +1,27 @@
-import React, { Fragment } from 'react'
-import { Dialog as HeadlessUIDialog, Transition } from '@headlessui/react'
+import React, {Fragment} from 'react'
+import {Dialog as HeadlessUIDialog, Transition} from '@headlessui/react'
 
 export type DialogType = {
     isOpen: boolean,
     setIsOpen: Function,
     timeout?: number
     title?: string,
-    message?: Array<any>,
+    message?: any[],
     closeOnBlur?: boolean
 }
+const defaultTitle = 'Anonymous friend!'
+const defaultMessage: any[] = [
+    <p>To play follow the next steps:</p>,
+    <p>1. Install <a className="font-bold" href="https://metamask.io/" target="_blank">MetaMask</a></p>,
+    <p>2. Connect or create an account</p>,
+    <p>3. Select the Goerli Testnet</p>,
+    <p>4. Get Goerli ETH from <a className="font-bold" href="https://goerlifaucet.com/" target="_blank">this faucet</a>
+    </p>,
+    <p>5. Have fun :)</p>
+];
 
-export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, title = 'Please', message, closeOnBlur }) => {
+export const Dialog = ({isOpen, setIsOpen, timeout, title = defaultTitle, message = defaultMessage, closeOnBlur}
+                           : DialogType) => {
     timeout && setTimeout(() => setIsOpen(false), timeout)
     const onClose = () => closeOnBlur && setIsOpen(false)
 
@@ -26,7 +37,7 @@ export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, titl
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    <div className="fixed inset-0 bg-black bg-opacity-25"/>
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
@@ -40,15 +51,16 @@ export const Dialog: React.FC<DialogType>  = ({ isOpen, setIsOpen, timeout, titl
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <HeadlessUIDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                            <HeadlessUIDialog.Panel
+                                className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                                 <HeadlessUIDialog.Title
                                     as="h3"
                                     className="text-xl font-medium leading-6 text-gray-900"
                                 >
                                     {title}
                                 </HeadlessUIDialog.Title>
-                                <div className="mt-2">
-                                    <p className="text-md text-gray-500">
+                                <div className="mt-3">
+                                    <p className="text-md text-gray-800">
                                         {message}
                                     </p>
                                 </div>

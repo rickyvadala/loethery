@@ -1,6 +1,7 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {useMetaMaskAccount} from "./MetaMaskProvider";
 import {ethers} from "ethers";
+// Deployed contract address & abi
 import {address, abi} from "../utils/constants";
 
 type ContractContextType = {
