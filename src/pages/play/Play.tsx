@@ -32,7 +32,7 @@ export const Play = () => {
             Promise.all([fetchWinner(), fetchManager(), fetchPlayers(), fetchLotteryBalance()])
                 .finally(() => setLoading(false))
         }
-    }, [contract, accountConnected]);
+    }, [contract, accountConnected, chainValid]);
 
     const onTransaction = async (name: string, params: {}) => {
         if (web3Provider && accountConnected) {
