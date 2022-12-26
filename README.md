@@ -45,7 +45,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://loethery.rickyvadala.com)
 
-Loethery is a blockchain lottery case of study made by <a target="_blank" href="http://rickyvadala.com/">Ricky Vadala</a> for <a target="_blank" href="http://olatim.com/">Olatim Community</a>    
+Loethery is a blockchain lottery case of study made by <a target="_blank" href="http://rickyvadala.com/">Ricky Vadala</a> for <a href="http://olatim.com/" target="_blank">Olatim Community</a>    
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
