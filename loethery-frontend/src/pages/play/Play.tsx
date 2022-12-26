@@ -53,7 +53,7 @@ export const Play = () => {
     }
 
     return (
-        <div className="min-h-screen px-8 pt-24 pb-8 flex flex-wrap justify-center">
+        <div className="min-h-[calc(100vh-2.5rem)] px-8 pt-24 pb-16 flex flex-wrap justify-center">
             <h1 className="my-12 text-5xl sm:text-7xl lg:text-8xl drop-shadow-2xl w-full flex items-center justify-center">
                 <Logo/>
             </h1>

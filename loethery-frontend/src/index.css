@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    background-image: -webkit-gradient(linear,
+    40% 0%,
+    75% 84%,
+    from(#3730A3),
+    to(#910572))
+}

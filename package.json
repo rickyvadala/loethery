@@ -1,0 +1,22 @@
+{
+  "name": "loethery",
+  "version": "1.0.0",
+  "description": "The decentralized web3 lottery.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rickyvadala/loethery.git"
+  },
+  "keywords": [
+    "loethery",
+    "decentralized",
+    "web3",
+    "lottery"
+  ],
+  "author": "rickyvadala <rickyvadala@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rickyvadala/loethery/issues"
+  },
+  "homepage": "https://github.com/rickyvadala/loethery#readme"
+}

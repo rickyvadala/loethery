@@ -8,7 +8,7 @@ export const Connect = () => {
     const navigate: NavigateFunction = useNavigate();
     return (
         <div
-            className="columns-2 gap-2 flex justify-center items-center min-h-screen p-8 pt-24">
+            className="columns-2 gap-2 flex justify-center items-center min-h-[calc(100vh-2.5rem)] p-8 pt-24">
             <div className="text-center z-10 text-xl text-white">
                 <h1 className="text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">
                     <Logo/>
