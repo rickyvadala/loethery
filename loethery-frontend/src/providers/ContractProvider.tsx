@@ -6,10 +6,12 @@ import {address, abi} from "../utils/constants";
 
 type ContractContextType = {
     contract: ethers.Contract | undefined;
+    signedContract: ethers.Contract | undefined;
 };
 
 const ContractContext = createContext<ContractContextType>({
-    contract: undefined
+    contract: undefined,
+    signedContract: undefined
 });
 
 type ProviderProps = {
@@ -19,15 +21,17 @@ type ProviderProps = {
 const ContractProvider = ({children}: ProviderProps) => {
     const {web3Provider} = useMetaMaskAccount()
     const [contract, setContract] = useState<ethers.Contract>()
+    const [signedContract, setSignedContract] = useState<ethers.Contract>()
 
     useEffect(() => {
         if (web3Provider) {
-            const contract = new ethers.Contract(address, abi, web3Provider)
-            setContract(contract)
+            const c = new ethers.Contract(address, abi, web3Provider)
+            setContract(c)
+            setSignedContract(c.connect(web3Provider.getSigner()))
         }
     }, [web3Provider])
 
-    const value = { contract };
+    const value = { contract, signedContract };
 
     return (
         <ContractContext.Provider value={value}>

@@ -14,31 +14,31 @@ export const Play = () => {
 
     const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
     const {accountConnected, web3Provider, chainValid} = useMetaMaskAccount();
-    const {contract} = useContract();
+    const {signedContract} = useContract();
     const value = ethers.utils.parseUnits('0.02', 'ether')
 
-    const fetchManager = async () => setManager(await contract?.manager())
-    const fetchPlayers = async () => setPlayers(await contract?.getPlayers())
-    const fetchWinner = async () => setWinner(await contract?.winner())
+    const fetchManager = async () => setManager(await signedContract?.manager())
+    const fetchPlayers = async () => setPlayers(await signedContract?.getPlayers())
+    const fetchWinner = async () => setWinner(await signedContract?.winner())
     const fetchLotteryBalance = async () => {
-        if (web3Provider && contract) {
-            setBalance(ethers.utils.formatEther(await web3Provider.getBalance(contract.address)))
+        if (web3Provider && signedContract) {
+            setBalance(ethers.utils.formatEther(await web3Provider.getBalance(signedContract.address)))
         }
     }
 
     useEffect(() => {
-        if (contract && chainValid) {
+        if (signedContract && chainValid) {
             setLoading(true)
             Promise.all([fetchWinner(), fetchManager(), fetchPlayers(), fetchLotteryBalance()])
                 .finally(() => setLoading(false))
         }
-    }, [contract, accountConnected, chainValid]);
+    }, [signedContract, accountConnected, chainValid]);
 
     const onTransaction = async (name: string, params: {}) => {
-        if (web3Provider && accountConnected) {
+        if (signedContract && accountConnected) {
             try {
                 setLoading(true)
-                const transaction = await contract?.connect(web3Provider.getSigner())[name](params)
+                const transaction = await signedContract[name](params)
                 setLoading(false)
                 setProgressLoading(true)
                 await transaction.wait()
