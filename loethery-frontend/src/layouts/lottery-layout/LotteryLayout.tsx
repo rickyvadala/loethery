@@ -7,6 +7,7 @@ import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Dialog, DialogType} from "../../components/atoms/dialog/Dialog";
 import {Navbar} from "../../components/organism/navbar/Navbar";
 import {Footer} from "../../components/organism/footer/Footer";
+import EtherscanService from "../../services/etherscan.service";
 
 export type NavbarItemType = { name: string, function: Function }
 export const LotteryLayout = () => {
@@ -31,6 +32,9 @@ export const LotteryLayout = () => {
 
     useEffect(() => {
         !window.ethereum && openDialog()
+        EtherscanService.getBlockCountdown('16701588').then(e => {
+            console.log(e)
+        })
     }, [])
 
 
