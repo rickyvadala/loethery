@@ -1,4 +1,5 @@
-import {etherscanHttpClient} from "../http-common";
+import {etherscanHttpClient} from "./http";
+
 const getBlockCountdownURL = '?module=block&action=getblockcountdown&blockno='
 
 class EtherscanService {
