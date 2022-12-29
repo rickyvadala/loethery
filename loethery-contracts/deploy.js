@@ -15,11 +15,15 @@ const deploy = async () => {
   console.log('Attempting to deploy from account', accounts[0]);
 
   const result = await new web3.eth.Contract(abi)
-    .deploy({ data: evm.bytecode.object })
-    .send({ gas: '1000000', from: accounts[0] });
+    .deploy({
+      data: evm.bytecode.object,
+      arguments: [web3.utils.toWei('0.02', 'ether'), true]
+    })
+    .send({from: accounts[0], gas: 1000000});
 
   console.log(JSON.stringify(abi));
   console.log('Contract deployed to', result.options.address);
   provider.engine.stop();
 };
-deploy();
+
+void deploy();

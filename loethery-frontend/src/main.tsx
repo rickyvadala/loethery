@@ -7,7 +7,7 @@ import ContractProvider from "./providers/ContractProvider";
 import {LotteryLayout} from "./layouts/lottery-layout/LotteryLayout";
 import {Play} from "./pages/play/Play";
 import {Code} from "./pages/code/Code";
-import {Connect} from "./pages/connect/Connect";
+import {Home} from "./pages/home/Home";
 
 const router = createBrowserRouter([
     {
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Connect/>,
+                element: <Home/>,
             },
             {
                 path: 'play',

@@ -7,13 +7,22 @@ contract Lottery {
     address public manager;
     address public winner;
     address payable[] public players;
+    uint public ticketPrice;
+    bool public purchasable;
 
-    constructor() {
+    constructor(uint _ticketPrice, bool _purchasable) {
         manager = msg.sender;
+        ticketPrice = _ticketPrice;
+        purchasable = _purchasable;
     }
 
-    function enter() public payable {
-        require(msg.value > .01 ether);
+    modifier owner() {
+        require(msg.sender == manager);
+        _;
+    }
+
+    function purchase() public payable {
+        require(msg.value == ticketPrice && purchasable == true);
         players.push(payable(msg.sender));
     }
 
@@ -21,16 +30,20 @@ contract Lottery {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
     }
 
-    function pickWinner() public restricted {
+    function pickWinner() public owner {
         uint index = random() % players.length;
         players[index].transfer(address(this).balance);
         winner = address(players[index]);
         players = new address payable[](0);
     }
 
-    modifier restricted() {
-        require(msg.sender == manager);
-        _;
+    function setPurchasable(bool _purchasable) public owner {
+        purchasable = _purchasable;
+    }
+
+    function setTicketPrice(uint _ticketPrice) public owner {
+        require(players.length == 0);
+        ticketPrice = _ticketPrice;
     }
 
     function getPlayers() public view returns (address payable[] memory) {

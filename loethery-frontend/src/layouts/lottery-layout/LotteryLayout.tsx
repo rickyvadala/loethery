@@ -37,7 +37,6 @@ export const LotteryLayout = () => {
         })
     }, [])
 
-
     const navigation: NavbarItemType[] = [
         {name: 'Home', function: () => navigate('/')},
         {name: 'Play', function: () => navigate('/play')},

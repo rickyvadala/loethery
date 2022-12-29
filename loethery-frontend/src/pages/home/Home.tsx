@@ -4,7 +4,7 @@ import etherCoin from "../../assets/img/ether-coin.png";
 import React from "react";
 import {Action} from "../../components/atoms/action/Action";
 
-export const Connect = () => {
+export const Home = () => {
     const navigate: NavigateFunction = useNavigate();
     return (
         <div
