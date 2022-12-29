@@ -80,22 +80,44 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Get a free API Key at [ETHERSCAN](https://etherscan.io/)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/rickyvadala/loethery.git
    ```
-3. Install NPM packages on both projects (frontend & contracts)
+2. Install NPM packages on both projects (frontend & contracts)
    ```sh
    npm install
    ```
-4. Create a `.env` file in the root folder and enter your API key.
+3. Required Accounts
+   1. [MetaMask](https://metamask.io/)
+      1. Create or login into a wallet
+      2. Copy your **mnemonic**
+      3. Select Goerli Test Network
+      4. Get some free GoerliETH from this [faucet](https://goerlifaucet.com/)
+   2. [Etherscan](https://etherscan.io/)
+      1. Get an **API key**
+   3. [Infura](https://app.infura.io/)
+      1. Get an **API key**
+   
+4. Create a `.env` file in the root folder on both projects (frontend & contracts).
    ```
-   VITE_ETHERSCAN = YOUR_API_KEY
+   # .env file on loethery-frontend
+   VITE_ETHERSCAN_API_KEY = YOUR_ETHERSCAN_API_KEY
    ```
-5. Download and install [MetaMask](https://metamask.io/).
-6. Create or login into a wallet account and select Goerli Testnet.
-7. Get some free GoerliETH from this [faucet](https://goerlifaucet.com/) to play.
+
+   ```
+   # .env file on loethery-contracts
+   WALLET_MNEMONIC="YOUR_METAMASK_MNEMONIC"
+   INFURA_API_KEY="YOUR_INFURA_API_KEY"
+   ```
+5. To deploy your own version of the contract
+   ```sh
+   npm run deploy
+   ```
+6. To run the frontend
+   ```sh
+   npm run dev
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -1,10 +1,11 @@
+require('dotenv').config();
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const Web3 = require('web3');
 const { abi, evm } = require('./compile');
 
 const provider = new HDWalletProvider(
-  'head vocal clock access damage when sugar pumpkin base remember opinion income',
-  'https://goerli.infura.io/v3/e11e3371862f4a53a673c9e5e84b3892'
+  process.env.WALLET_MNEMONIC,
+  'https://goerli.infura.io/v3/' + process.env.INFURA_API_KEY
 );
 
 const web3 = new Web3(provider);
