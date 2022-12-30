@@ -20,6 +20,7 @@ export const Play = () => {
     const {contractService} = useContract()
 
     const fetchData = async () => {
+        setLoading(true)
         const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
             contractService.fetchTicketPrice(),
             contractService.fetchWinner(),
@@ -32,13 +33,11 @@ export const Play = () => {
         setManager(_manager)
         setPlayers(_players)
         setBalance(_balance)
+        setLoading(false)
     }
 
     useEffect(() => {
-        if (contractService && chainValid) {
-            setLoading(true)
-            fetchData().finally(setLoading(false))
-        }
+        if (contractService && chainValid) void fetchData()
     }, [contractService, accountConnected, chainValid]);
 
     const onPurchase = () => {
