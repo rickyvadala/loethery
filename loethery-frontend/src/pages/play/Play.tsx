@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {ethers} from "ethers";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Logo} from "../../components/atoms/logo/Logo";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
+import ContractService, {TransactionParams} from "../../services/contract.service";
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -18,42 +18,37 @@ export const Play = () => {
     const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
     const {accountConnected, web3Provider, chainValid} = useMetaMaskAccount();
     const {signedContract} = useContract();
-    const value = ethers.utils.parseUnits('0.02', 'ether')
 
-
-    const fetchManager = async () => setManager(await signedContract.manager())
-    const fetchPlayers = async () => setPlayers(await signedContract.getPlayers())
-    const fetchWinner = async () => setWinner(await signedContract.winner())
-    const fetchTicketPrice = async () => setTicketPrice(
-        ethers.utils.formatEther(await signedContract.ticketPrice())
-    )
-    const fetchLotteryBalance = async () => {
-        web3Provider && setBalance(ethers.utils.formatEther(
-            await web3Provider.getBalance(signedContract.address))
-        )
+    const fetchData = async () => {
+        const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
+            ContractService.fetchTicketPrice(signedContract),
+            ContractService.fetchWinner(signedContract),
+            ContractService.fetchManager(signedContract),
+            ContractService.fetchPlayers(signedContract),
+            ContractService.fetchLotteryBalance(signedContract, web3Provider),
+        ])
+        setTicketPrice(_ticketPrice)
+        setWinner(_winner)
+        setManager(_manager)
+        setPlayers(_players)
+        setBalance(_balance)
     }
 
     useEffect(() => {
         if (signedContract && chainValid) {
             setLoading(true)
-            Promise.all([
-                fetchWinner(),
-                fetchManager(),
-                fetchPlayers(),
-                fetchLotteryBalance(),
-                fetchTicketPrice()
-            ]).finally(() => setLoading(false))
+            fetchData().catch(console.error).finally(setLoading(false))
         }
     }, [signedContract, accountConnected, chainValid]);
 
-    const onTransaction = async (name: string, params: {}) => {
+    const onTransaction = async (promise: any, params: TransactionParams) => {
         try {
             setLoading(true)
-            const transaction = await signedContract[name](params)
+            const transaction = await promise(signedContract, params)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()
-            await Promise.all([fetchLotteryBalance(), fetchPlayers(), fetchWinner()])
+            await fetchData()
         } catch (e: any) {
             alert(e.message)
         } finally {
@@ -76,7 +71,10 @@ export const Play = () => {
                 }
                 <div className={"w-full"}>
                     <Action disabled={disabled}
-                            onClick={() => onTransaction('purchase', {from: accountConnected, value})}
+                            onClick={() => onTransaction(
+                                ContractService.onPurchase,
+                                {from: accountConnected, value: ticketPrice})
+                            }
                             label={`Play now!`}/>
                     <code className={"text-md"}><b>Ticket price:</b> {ticketPrice} ethers</code>
                 </div>
@@ -97,7 +95,7 @@ export const Play = () => {
                         <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
                         <Action disabled={disabled}
-                                onClick={() => onTransaction('pickWinner', {from: accountConnected})}
+                                onClick={() => onTransaction(ContractService.onPickWinner, {from: accountConnected})}
                                 label={'Start'}
                         />
                     </>
