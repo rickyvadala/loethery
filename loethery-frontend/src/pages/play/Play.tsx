@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Logo} from "../../components/atoms/logo/Logo";
-import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
-import ContractService, {TransactionParams} from "../../services/contract.service";
+import {TransactionParams} from "../../services/contract.service";
+import {useContract} from "../../providers/ContractProvider";
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -16,16 +16,16 @@ export const Play = () => {
     const [balance, setBalance] = useState<string>('0')
 
     const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
-    const {accountConnected, web3Provider, chainValid} = useMetaMaskAccount();
-    const {signedContract} = useContract();
+    const {accountConnected, chainValid} = useMetaMaskAccount();
+    const {contractService} = useContract()
 
     const fetchData = async () => {
         const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
-            ContractService.fetchTicketPrice(signedContract),
-            ContractService.fetchWinner(signedContract),
-            ContractService.fetchManager(signedContract),
-            ContractService.fetchPlayers(signedContract),
-            ContractService.fetchLotteryBalance(signedContract, web3Provider),
+            contractService.fetchTicketPrice(),
+            contractService.fetchWinner(),
+            contractService.fetchManager(),
+            contractService.fetchPlayers(),
+            contractService.fetchLotteryBalance(),
         ])
         setTicketPrice(_ticketPrice)
         setWinner(_winner)
@@ -35,16 +35,22 @@ export const Play = () => {
     }
 
     useEffect(() => {
-        if (signedContract && chainValid) {
+        if (contractService && chainValid) {
             setLoading(true)
-            fetchData().catch(console.error).finally(setLoading(false))
+            fetchData().finally(setLoading(false))
         }
-    }, [signedContract, accountConnected, chainValid]);
+    }, [contractService, accountConnected, chainValid]);
 
-    const onTransaction = async (promise: any, params: TransactionParams) => {
+    const onPurchase = () => {
+        void onTransaction('onPurchase', {from: accountConnected, value: ticketPrice})
+    }
+    const onPickWinner = () => {
+        void onTransaction('onPickWinner', {from: accountConnected})
+    }
+    const onTransaction = async (method: string, params: TransactionParams) => {
         try {
             setLoading(true)
-            const transaction = await promise(signedContract, params)
+            const transaction = await contractService[method](params)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()
@@ -70,12 +76,7 @@ export const Play = () => {
                   </div>
                 }
                 <div className={"w-full"}>
-                    <Action disabled={disabled}
-                            onClick={() => onTransaction(
-                                ContractService.onPurchase,
-                                {from: accountConnected, value: ticketPrice})
-                            }
-                            label={`Play now!`}/>
+                    <Action disabled={disabled} onClick={onPurchase} label={`Play now!`}/>
                     <code className={"text-md"}><b>Ticket price:</b> {ticketPrice} ethers</code>
                 </div>
                 <hr className={"w-full"}/>
@@ -94,10 +95,7 @@ export const Play = () => {
                     <>
                         <hr className={"w-full"}/>
                         <p className={"mb-2"}>Pick a winner!</p>
-                        <Action disabled={disabled}
-                                onClick={() => onTransaction(ContractService.onPickWinner, {from: accountConnected})}
-                                label={'Start'}
-                        />
+                        <Action disabled={disabled} onClick={onPickWinner} label={'Start'}/>
                     </>
                 )}
             </div>

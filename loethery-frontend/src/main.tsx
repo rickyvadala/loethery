@@ -8,6 +8,7 @@ import {LotteryLayout} from "./layouts/lottery-layout/LotteryLayout";
 import {Play} from "./pages/play/Play";
 import {Code} from "./pages/code/Code";
 import {Home} from "./pages/home/Home";
+import {ethers} from "ethers";
 
 const router = createBrowserRouter([
     {
@@ -43,5 +44,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 declare global {
     interface Window {
         ethereum: any,
+        contract: ethers.Contract
     }
 }

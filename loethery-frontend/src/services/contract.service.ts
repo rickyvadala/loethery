@@ -1,28 +1,45 @@
-import {ethers} from "ethers";
+import {Contract, utils} from "ethers";
+import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
 export type TransactionParams = { from: string, value?: string }
-class ContractService {
-    async fetchTicketPrice(signedContract): Promise<string> {
-        return ethers.utils.formatEther(await signedContract.ticketPrice())
+export class ContractService {
+    contract: Contract;
+    provider: Web3Provider;
+
+    constructor(_contract, _provider) {
+        this.contract = _contract
+        this.provider = _provider
     }
-    async fetchWinner(signedContract) {
-        return await signedContract.winner()
+
+    async fetchTicketPrice(): Promise<string> {
+        return utils.formatEther(await this.contract.ticketPrice())
     }
-    async fetchManager(signedContract) {
-        return await signedContract.manager()
+
+    async fetchWinner() {
+        return await this.contract.winner()
     }
-    async fetchPlayers(signedContract) {
-        return await signedContract.getPlayers()
+
+    async fetchManager() {
+        return await this.contract.manager()
     }
-    async fetchLotteryBalance(signedContract, web3Provider): Promise<string> {
-        return ethers.utils.formatEther(await web3Provider.getBalance(signedContract.address))
+
+    async fetchPlayers() {
+        return await this.contract.getPlayers()
     }
-    async onPickWinner(signedContract, params: TransactionParams) {
-        return await signedContract.pickWinner(params)
+
+    async fetchLotteryBalance(): Promise<string> {
+        return utils.formatEther(await this.provider.getBalance(this.contract.address))
     }
-    async onPurchase(signedContract, params: TransactionParams) {
-        return await signedContract.purchase(params)
+
+    async onPickWinner(params: TransactionParams) {
+        try {
+            return await this.contract.pickWinner(params)
+        } catch (e) {
+            throw new Error(e)
+        }
+    }
+
+    async onPurchase({from, value}: TransactionParams) {
+        return await this.contract.purchase({from, value: utils.parseUnits(value, 'ether')})
     }
 }
-
-export default new ContractService();
