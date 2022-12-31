@@ -66,6 +66,7 @@ Loethery is a blockchain lottery case of study made by <a target="_blank" href="
 [![Web3][Web3]][Web3-url]
 [![Truffle][Truffle]][Truffle-url]
 [![Ganache][Ganache]][Ganache-url]
+[![Firebase][Firebase]][Firebase-url]
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -212,3 +213,5 @@ Ricky Vadala
 [Truffle-url]: https://trufflesuite.com/
 [Ganache]: https://img.shields.io/badge/ganache-black?style=for-the-badge&logo=ganache&logoColor=white
 [Ganache-url]: https://trufflesuite.com/docs/ganache
+[Firebase]: https://img.shields.io/badge/firebase-black?style=for-the-badge&logo=firebase&logoColor=golden
+[Firebase-url]: https://firebase.google.com/docs
