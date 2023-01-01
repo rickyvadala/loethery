@@ -4,6 +4,7 @@ import {Bars3Icon, CheckCircleIcon, XCircleIcon, XMarkIcon} from "@heroicons/rea
 import {Dialog as MobileMenu} from '@headlessui/react'
 import {NavbarItemType} from "../../../layouts/lottery-layout/LotteryLayout";
 import {Social} from "../../atoms/social/Social";
+import {NavigateFunction, useNavigate} from "react-router-dom";
 
 type NavbarType = {
     navigation: NavbarItemType[],
@@ -11,13 +12,14 @@ type NavbarType = {
     openDialog: Function
 }
 export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog}) => {
+    const navigate: NavigateFunction = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
         <>
             <nav className="flex h-9 items-center" aria-label="Global">
                 <div className={"flex items-center"}>
-                    <div className="flex lg:flex-1 text-3xl font-bold mr-8" aria-label="Global">
+                    <div className="flex lg:flex-1 text-3xl font-bold mr-8" aria-label="Global" onClick={() => navigate('/')}>
                         <Logo bracketsColor={"text-indigo-900"}/>
                     </div>
                     <div className="hidden lg:flex flex-1 justify-center gap-x-6 text-lg">
@@ -58,7 +60,7 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                 <MobileMenu.Panel
                     className="fixed inset-0 z-20 overflow-y-auto bg-gradient-to-r from-indigo-900 to-[#910572] px-8 py-6 lg:hidden">
                     <div className="flex h-9 items-center justify-between">
-                        <div className="flex text-3xl">
+                        <div className="flex text-3xl" onClick={() => navigate('/')}>
                             <Logo/>
                         </div>
                         <div className="flex">

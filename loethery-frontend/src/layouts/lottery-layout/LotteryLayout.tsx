@@ -7,7 +7,7 @@ import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Dialog, DialogType} from "../../components/atoms/dialog/Dialog";
 import {Navbar} from "../../components/organism/navbar/Navbar";
 import {Footer} from "../../components/organism/footer/Footer";
-import EtherscanService from "../../services/etherscan.service";
+// import EtherscanService from "../../services/etherscan.service";
 
 export type NavbarItemType = { name: string, function: Function }
 export const LotteryLayout = () => {
@@ -16,7 +16,7 @@ export const LotteryLayout = () => {
 
     const [loading, setLoading] = useState<boolean>(false)
     const [progressLoading, setProgressLoading] = useState<boolean>(false)
-    const {chainValid, accountConnected} = useMetaMaskAccount();
+    const {chainValid, accountConnected, web3Enabled} = useMetaMaskAccount();
 
     const [disabled, setDisabled] = useState<boolean>(true)
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -27,14 +27,14 @@ export const LotteryLayout = () => {
     }
 
     useEffect(() => {
-        setDisabled(!(accountConnected && chainValid && !progressLoading))
-    }, [progressLoading, accountConnected, chainValid])
+        setDisabled(!(web3Enabled && !progressLoading))
+    }, [progressLoading, web3Enabled])
 
     useEffect(() => {
-        !window.ethereum && openDialog()
-        EtherscanService.getBlockCountdown('16701588').then(e => {
-            console.log(e)
-        })
+        !window.ethereum && web3Enabled && openDialog()
+        // EtherscanService.getBlockCountdown('16701588').then(e => {
+        //     console.log(e)
+        // })
     }, [])
 
     const navigation: NavbarItemType[] = [

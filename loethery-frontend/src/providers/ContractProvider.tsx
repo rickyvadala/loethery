@@ -22,21 +22,21 @@ type ProviderProps = {
 };
 
 const ContractProvider = ({children}: ProviderProps) => {
-    const {web3Provider} = useMetaMaskAccount()
+    const {accountConnected, web3Provider, web3Enabled} = useMetaMaskAccount()
     const [contract, setContract] = useState<ethers.Contract>()
     const [contractSigned, setContractSigned] = useState<ethers.Contract>()
     // Instance of service
     const [contractService, setContractService] = useState<ContractService>()
 
     useEffect(() => {
-        if (web3Provider) {
+        if (web3Enabled) {
             const _contract = new ethers.Contract(address, abi, web3Provider)
             const _signed = _contract.connect(web3Provider.getSigner())
             setContract(_contract)
             setContractSigned(_signed)
-            setContractService(new ContractService(_signed, web3Provider))
+            setContractService(new ContractService(_signed, web3Provider, accountConnected))
         }
-    }, [web3Provider])
+    }, [web3Enabled])
 
     const value = { contract, contractSigned, contractService };
 

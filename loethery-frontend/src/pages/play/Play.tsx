@@ -3,7 +3,6 @@ import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Logo} from "../../components/atoms/logo/Logo";
 import {useOutletContext} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
-import {TransactionParams} from "../../services/contract.service";
 import {useContract} from "../../providers/ContractProvider";
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -16,40 +15,41 @@ export const Play = () => {
     const [balance, setBalance] = useState<string>('0')
 
     const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
-    const {accountConnected, chainValid} = useMetaMaskAccount();
+    const {accountConnected} = useMetaMaskAccount();
     const {contractService} = useContract()
 
     const fetchData = async () => {
-        setLoading(true)
-        const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
-            contractService.fetchTicketPrice(),
-            contractService.fetchWinner(),
-            contractService.fetchManager(),
-            contractService.fetchPlayers(),
-            contractService.fetchLotteryBalance(),
-        ])
-        setTicketPrice(_ticketPrice)
-        setWinner(_winner)
-        setManager(_manager)
-        setPlayers(_players)
-        setBalance(_balance)
-        setLoading(false)
+        try {
+            setLoading(true)
+            const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
+                contractService.fetchTicketPrice(),
+                contractService.fetchWinner(),
+                contractService.fetchManager(),
+                contractService.fetchPlayers(),
+                contractService.fetchLotteryBalance(),
+            ])
+            setTicketPrice(_ticketPrice)
+            setWinner(_winner)
+            setManager(_manager)
+            setPlayers(_players)
+            setBalance(_balance)
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setLoading(false)
+        }
     }
 
     useEffect(() => {
-        if (contractService && chainValid) void fetchData()
-    }, [contractService, accountConnected, chainValid]);
+        if (contractService) void fetchData()
+    }, [contractService]);
 
-    const onPurchase = () => {
-        void onTransaction('onPurchase', {from: accountConnected, value: ticketPrice})
-    }
-    const onPickWinner = () => {
-        void onTransaction('onPickWinner', {from: accountConnected})
-    }
-    const onTransaction = async (method: string, params: TransactionParams) => {
+    const onPurchase = () => void onTransaction('onPurchase', ticketPrice)
+    const onPickWinner = () => void onTransaction('onPickWinner')
+    const onTransaction = async (method: string, value?: string) => {
         try {
             setLoading(true)
-            const transaction = await contractService[method](params)
+            const transaction = await contractService[method](value)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()
