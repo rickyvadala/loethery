@@ -5,6 +5,7 @@ import {Dialog as MobileMenu} from '@headlessui/react'
 import {NavbarItemType} from "../../../layouts/lottery-layout/LotteryLayout";
 import {Social} from "../../atoms/social/Social";
 import {NavigateFunction, useNavigate} from "react-router-dom";
+import {dialogMessages} from "../../../utils/constants";
 
 type NavbarType = {
     navigation: NavbarItemType[],
@@ -36,7 +37,7 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                 <div className="hidden lg:flex lg:gap-2 lg:flex-1 lg:justify-end text-white text-md">
                     {checkers.map(item => (
                         <span key={item.name}
-                              onClick={() => !item.function() && openDialog()}
+                              onClick={() => !item.function() && openDialog({...dialogMessages.ALL_STEPS})}
                               className={`${!item.function() ? 'animate-bounce cursor-pointer bg-gray-800' : 'cursor-default  bg-indigo-800'} gap-2 flex rounded-lg px-3 py-2`}>
                             {item.name}
                             {item.function()
@@ -92,7 +93,7 @@ export const Navbar: React.FC<NavbarType> = ({navigation, checkers, openDialog})
                             <div className="py-6 mb-8">
                                 {checkers.map(item => (
                                     <span key={item.name}
-                                          onClick={() => openDialog()}
+                                          onClick={() => openDialog({...dialogMessages.ALL_STEPS})}
                                           className={`${!item.function() ? 'bg-gray-100 text-red-600' : 'bg-amber-500 text-white'} -mx-3 my-2 flex gap-2 bg-amber-500 drop-shadow-md rounded-lg py-2.5 px-3 text-base font-semibold cursor-pointer`}>
                                         {item.name}
                                         {item.function()

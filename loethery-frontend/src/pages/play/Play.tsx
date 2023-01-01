@@ -4,6 +4,7 @@ import {Logo} from "../../components/atoms/logo/Logo";
 import {useOutletContext} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
 import {useContract} from "../../providers/ContractProvider";
+import {dialogMessages} from "../../utils/constants";
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -14,7 +15,7 @@ export const Play = () => {
     const [ticketPrice, setTicketPrice] = useState<string>('')
     const [balance, setBalance] = useState<string>('0')
 
-    const [setLoading, setProgressLoading, disabled] = useOutletContext<any>();
+    const [setLoading, setProgressLoading, openDialog, disabled] = useOutletContext<any>();
     const {accountConnected} = useMetaMaskAccount();
     const {contractService} = useContract()
 
@@ -34,7 +35,7 @@ export const Play = () => {
             setPlayers(_players)
             setBalance(_balance)
         } catch (e) {
-            console.log(e)
+            console.warn(e)
         } finally {
             setLoading(false)
         }
@@ -55,7 +56,16 @@ export const Play = () => {
             await transaction.wait()
             await fetchData()
         } catch (e: any) {
-            alert(e.message)
+            debugger
+            switch (e.code) {
+                case 'INSUFFICIENT_FUNDS':
+                    openDialog({...dialogMessages.INSUFFICIENT_FUNDS});
+                    break;
+                case 'ACTION_REJECTED':
+                    break;
+                default:
+                    console.warn(e)
+            }
         } finally {
             setLoading(false)
             setProgressLoading(false)

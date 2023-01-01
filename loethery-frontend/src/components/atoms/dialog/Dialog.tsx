@@ -6,24 +6,12 @@ export type DialogType = {
     setIsOpen: Function,
     timeout?: number
     title?: string,
-    message?: string,
-    closeOnBlur?: boolean
+    message?: JSX.Element,
 }
-// const defaultTitle = 'Anonymous friend!'
-// const defaultMessage: any[] = [
-//     <p key="0">To play follow the next steps:</p>,
-//     <p key="1">1. Install <a className="font-bold" href="https://metamask.io/" target="_blank">MetaMask</a></p>,
-//     <p key="2">2. Connect or create an account</p>,
-//     <p key="3">3. Select the Goerli Testnet</p>,
-//     <p key="4">4. Get Goerli ETH from <a className="font-bold" href="https://goerlifaucet.com/" target="_blank">this faucet</a>
-//     </p>,
-//     <p key="5">5. Have fun :)</p>
-// ];
 
-export const Dialog = ({isOpen, setIsOpen, timeout, title = 'Hi', message = 'Welcome to Loethery!', closeOnBlur}
-                           : DialogType) => {
+export const Dialog = ({isOpen, setIsOpen, timeout, title, message}: DialogType) => {
     timeout && setTimeout(() => setIsOpen(false), timeout)
-    const onClose = () => closeOnBlur && setIsOpen(false)
+    const onClose = () => setIsOpen(false)
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -66,10 +54,9 @@ export const Dialog = ({isOpen, setIsOpen, timeout, title = 'Hi', message = 'Wel
                                 </div>
 
                                 <div className="mt-4">
-                                    <button
-                                        type="button"
-                                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-md font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        onClick={() => setIsOpen(false)}
+                                    <button type="button"
+                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-md font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            onClick={onClose}
                                     >
                                         Ok
                                     </button>

@@ -16,8 +16,7 @@ export class ContractService {
         try {
             return utils.formatEther(await this.contract.ticketPrice())
         } catch (e) {
-            console.log(e)
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -25,8 +24,7 @@ export class ContractService {
         try {
             return await this.contract.winner()
         } catch (e) {
-            console.log(e)
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -34,8 +32,7 @@ export class ContractService {
         try {
             return await this.contract.manager()
         } catch (e) {
-            console.log(e)
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -43,8 +40,7 @@ export class ContractService {
         try {
             return await this.contract.getPlayers()
         } catch (e) {
-            console.log(e)
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -53,7 +49,7 @@ export class ContractService {
             return utils.formatEther(await this.provider.getBalance(this.contract.address))
         } catch (e) {
             console.error('fetchLotteryBalance: ', e)
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -61,7 +57,7 @@ export class ContractService {
         try {
             return await this.contract.pickWinner({from: this.account})
         } catch (e) {
-            throw new Error(e)
+            throw e
         }
     }
 
@@ -72,7 +68,7 @@ export class ContractService {
                 value: utils.parseUnits(value, 'ether')
             })
         } catch (e) {
-            throw new Error(e)
+            throw e
         }
     }
 }

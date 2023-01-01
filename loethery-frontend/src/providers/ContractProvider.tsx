@@ -36,7 +36,7 @@ const ContractProvider = ({children}: ProviderProps) => {
             setContractSigned(_signed)
             setContractService(new ContractService(_signed, web3Provider, accountConnected))
         }
-    }, [web3Enabled])
+    }, [accountConnected, web3Enabled])
 
     const value = { contract, contractSigned, contractService };
 

@@ -12,7 +12,7 @@ export const Code = () => {
             <h1 className="z-20 w-full mt-12 mb-8 text-5xl sm:text-7xl lg:text-8xl drop-shadow-2xl w-full flex items-center justify-center">
                 <Logo/>
             </h1>
-            <div className={"z-20 flex flex-col items-center justify-center text-xl mb-4"}>
+            <div className={"z-20 flex flex-col items-center justify-center text-xl mb-4 text-center"}>
                 <code>To see all the codebase, check the repo!</code>
                 <a className={" rounded-full hover:bg-amber-500 w-[48px] mt-2"}
                    href="https://github.com/rickyvadala/loethery"
@@ -25,7 +25,7 @@ export const Code = () => {
             <code className={"z-20 flex justify-left w-full max-w-screen-md"}>Network: Goerli Testnet
                 (ChainID: {ChainEnum.GOERLI_TEST_NETWORK})
             </code>
-            <SyntaxHighlighter className={"z-20 max-w-screen-md w-full"} showLineNumbers={true} language="javascript" style={vscDarkPlus}>
+            <SyntaxHighlighter className={"z-20 max-w-screen-md w-full"} language="solidity" style={vscDarkPlus}>
                 {contract}
             </SyntaxHighlighter>
         </div>
