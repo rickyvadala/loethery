@@ -1,20 +1,23 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {useMetaMaskAccount} from "./MetaMaskProvider";
 import {ethers} from "ethers";
-// Deployed contract address & abi
-import {address, abi} from "../utils/constants";
-import {ContractService} from "../services/contract.service";
+import {address} from "../utils/constants/contracts/Lottery/address";
+import {abi} from '../utils/constants/contracts/Lottery/Lottery.json';
+import {LotteryService} from "../services/lottery.service";
+import {DeployService} from "../services/deploy.service";
 
 type ContractContextType = {
     contract: ethers.Contract | undefined;
     contractSigned: ethers.Contract | undefined;
-    contractService: ContractService | undefined;
+    lotteryService: LotteryService | undefined;
+    deployService: DeployService | undefined;
 };
 
 const ContractContext = createContext<ContractContextType>({
     contract: undefined,
     contractSigned: undefined,
-    contractService: undefined
+    lotteryService: undefined,
+    deployService: undefined,
 });
 
 type ProviderProps = {
@@ -26,7 +29,8 @@ const ContractProvider = ({children}: ProviderProps) => {
     const [contract, setContract] = useState<ethers.Contract>()
     const [contractSigned, setContractSigned] = useState<ethers.Contract>()
     // Instance of service
-    const [contractService, setContractService] = useState<ContractService>()
+    const [lotteryService, setLotteryService] = useState<LotteryService>()
+    const [deployService, setDeployService] = useState<DeployService>()
 
     useEffect(() => {
         if (web3Enabled) {
@@ -34,11 +38,13 @@ const ContractProvider = ({children}: ProviderProps) => {
             const _signed = _contract.connect(web3Provider.getSigner())
             setContract(_contract)
             setContractSigned(_signed)
-            setContractService(new ContractService(_signed, web3Provider, accountConnected))
+
+            setLotteryService(new LotteryService(_signed, web3Provider, accountConnected))
+            setDeployService(new DeployService(web3Provider.getSigner()))
         }
     }, [accountConnected, web3Enabled])
 
-    const value = { contract, contractSigned, contractService };
+    const value = { contract, contractSigned, lotteryService, deployService };
 
     return (
         <ContractContext.Provider value={value}>

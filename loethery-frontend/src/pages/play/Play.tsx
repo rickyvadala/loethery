@@ -17,17 +17,17 @@ export const Play = () => {
 
     const [setLoading, setProgressLoading, openDialog, disabled] = useOutletContext<any>();
     const {accountConnected} = useMetaMaskAccount();
-    const {contractService} = useContract()
+    const {lotteryService} = useContract()
 
     const fetchData = async () => {
         try {
             setLoading(true)
             const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
-                contractService.fetchTicketPrice(),
-                contractService.fetchWinner(),
-                contractService.fetchManager(),
-                contractService.fetchPlayers(),
-                contractService.fetchLotteryBalance(),
+                lotteryService.fetchTicketPrice(),
+                lotteryService.fetchWinner(),
+                lotteryService.fetchManager(),
+                lotteryService.fetchPlayers(),
+                lotteryService.fetchLotteryBalance(),
             ])
             setTicketPrice(_ticketPrice)
             setWinner(_winner)
@@ -42,15 +42,15 @@ export const Play = () => {
     }
 
     useEffect(() => {
-        if (contractService) void fetchData()
-    }, [contractService]);
+        if (lotteryService) void fetchData()
+    }, [lotteryService]);
 
     const onPurchase = () => void onTransaction('onPurchase', ticketPrice)
     const onPickWinner = () => void onTransaction('onPickWinner')
     const onTransaction = async (method: string, value?: string) => {
         try {
             setLoading(true)
-            const transaction = await contractService[method](value)
+            const transaction = await lotteryService[method](value)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()

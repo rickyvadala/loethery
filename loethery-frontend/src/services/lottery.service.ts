@@ -1,8 +1,8 @@
-import {Contract, utils} from "ethers";
+import {ethers} from "ethers";
 import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
-export class ContractService {
-    contract: Contract;
+export class LotteryService {
+    contract: ethers.Contract;
     provider: Web3Provider;
     account: string;
 
@@ -14,7 +14,7 @@ export class ContractService {
 
     async fetchTicketPrice(): Promise<string> {
         try {
-            return utils.formatEther(await this.contract.ticketPrice())
+            return ethers.utils.formatEther(await this.contract.ticketPrice())
         } catch (e) {
             throw e
         }
@@ -46,7 +46,7 @@ export class ContractService {
 
     async fetchLotteryBalance(): Promise<string> {
         try {
-            return utils.formatEther(await this.provider.getBalance(this.contract.address))
+            return ethers.utils.formatEther(await this.provider.getBalance(this.contract.address))
         } catch (e) {
             console.error('fetchLotteryBalance: ', e)
             throw e
@@ -65,7 +65,7 @@ export class ContractService {
         try {
             return await this.contract.purchase({
                 from: this.account,
-                value: utils.parseUnits(value, 'ether')
+                value: ethers.utils.parseUnits(value, 'ether')
             })
         } catch (e) {
             throw e

@@ -8,6 +8,7 @@ import {LotteryLayout} from "./layouts/lottery-layout/LotteryLayout";
 import {Play} from "./pages/play/Play";
 import {Code} from "./pages/code/Code";
 import {Home} from "./pages/home/Home";
+import {Create} from "./pages/create/Create";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
             {
                 path: 'play',
                 element: <Play/>,
+            },
+            {
+                path: 'create',
+                element: <Create/>,
             },
             {
                 path: 'code',

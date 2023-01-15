@@ -36,9 +36,11 @@ export const LotteryLayout = () => {
         // EtherscanService.getBlockCountdown('16701588').then(console.log)
     }, [])
 
+    const hasImages = () =>  location.pathname !== '/' && location.pathname !== '/create';
     const navigation: NavbarItemType[] = [
         {name: 'Home', function: () => navigate('/')},
         {name: 'Play', function: () => navigate('/play')},
+        {name: 'Create', function: () => navigate('/create')},
         {name: 'Code', function: () => navigate('/code')},
         {name: '@rickyvadala', function: () => window.open('https://rickyvadala.com/', '_blank')},
     ]
@@ -59,7 +61,7 @@ export const LotteryLayout = () => {
             </div>
             <main className={`
             ${location.pathname === '/play' && !(accountConnected && chainValid) && 'blur-sm'} bg-gradient-to-r from-indigo-800 to-[#910572] relative pb-12`}>
-                {location.pathname !== '/' &&
+                {hasImages() &&
                   <>
                     <div className="z-0 max-w-md min-w-sm absolute opacity-20 right-0 top-24">
                       <img src={etherCoin} alt="ethereum coin" className="drop-shadow-2xl"/>

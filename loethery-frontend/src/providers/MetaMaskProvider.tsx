@@ -1,5 +1,5 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {providers, utils} from "ethers";
+import {ethers} from "ethers";
 import {ChainEnum} from "../utils/enums/ChainEnum";
 import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
@@ -41,7 +41,7 @@ const MetaMaskAccountProvider = ({children}: ProviderProps) => {
             // Reload if account changes
             window.ethereum.on('accountsChanged', (accounts: Array<string>) => setAccounts(accounts));
 
-            const provider = new providers.Web3Provider(window.ethereum)
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
             setWeb3Provider(provider)
             const chain = await window.ethereum.request({method: 'eth_chainId'})
             setChain(chain)
@@ -55,7 +55,7 @@ const MetaMaskAccountProvider = ({children}: ProviderProps) => {
     }
 
     const fetchAccountBalance = async (_connected) => {
-        setAccountBalance(utils.formatEther(await web3Provider.getBalance(_connected)))
+        setAccountBalance(ethers.utils.formatEther(await web3Provider.getBalance(_connected)))
     };
 
     useEffect(() => {

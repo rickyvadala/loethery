@@ -1,7 +1,8 @@
 import React from "react";
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {vscDarkPlus} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {address, contract} from "../../utils/constants";
+import {address} from "../../utils/constants/contracts/Lottery/address";
+import {code} from "../../utils/constants/contracts/Lottery/code";
 import {Logo} from "../../components/atoms/logo/Logo";
 import {ChainEnum} from "../../utils/enums/ChainEnum";
 import {Github} from "@icons-pack/react-simple-icons";
@@ -26,7 +27,7 @@ export const Code = () => {
                 (ChainID: {ChainEnum.GOERLI_TEST_NETWORK})
             </code>
             <SyntaxHighlighter className={"z-20 max-w-screen-md w-full"} language="solidity" style={vscDarkPlus}>
-                {contract}
+                {code}
             </SyntaxHighlighter>
         </div>
     );

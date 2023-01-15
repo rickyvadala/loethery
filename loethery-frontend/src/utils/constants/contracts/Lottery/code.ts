@@ -1,4 +1,4 @@
-export const contract =
+export const code: string =
 `//SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.9;
