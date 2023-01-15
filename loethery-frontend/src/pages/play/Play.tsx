@@ -56,7 +56,6 @@ export const Play = () => {
             await transaction.wait()
             await fetchData()
         } catch (e: any) {
-            debugger
             switch (e.code) {
                 case 'INSUFFICIENT_FUNDS':
                     openDialog({...dialogMessages.INSUFFICIENT_FUNDS});
