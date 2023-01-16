@@ -1,33 +1,29 @@
 import {Logo} from "../../components/atoms/logo/Logo";
 import etherCoin from "../../assets/img/ether-coin.png";
-import React, {useEffect} from "react";
+import React from "react";
 import {Action} from "../../components/atoms/action/Action";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
-import {getLotteries} from "../../services/firestore.service";
-import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import { useState } from 'react'
 import { Switch } from '@headlessui/react'
+import {addLottery} from "../../services/firestore.service";
+import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
+import {InformationCircleIcon   } from "@heroicons/react/24/outline";
+
 
 export const Create = () => {
     const [purchasable, setPurchasable] = useState(true)
     const [ticketPrice, setTicketPrice] = useState('0.02')
+    const {accountConnected} = useMetaMaskAccount()
 
     const {deployService} = useContract()
     const [setLoading] = useOutletContext<any>();
-    const {accountConnected, web3Enabled} = useMetaMaskAccount()
-
-    useEffect(() => {
-        if (accountConnected && web3Enabled) {
-            getLotteries(accountConnected).then(console.log)
-        }
-    }, [accountConnected, web3Enabled])
 
     const deploy = async () => {
         try {
             setLoading(true)
             const deployed = await deployService.onDeploy(ticketPrice, purchasable)
-            alert(deployed.contractAddress)
+            await addLottery(accountConnected, deployed.contractAddress)
         } catch (e) {
             console.log(e)
         } finally {
@@ -44,7 +40,7 @@ export const Create = () => {
                 <h5 className="mt-8 flex flex-col items-start">
                     <code>1. Create your own lottery</code>
                     <code>2. Share it with anybody</code>
-                    <code>3. Play with you friends</code>
+                    <code>3. Play with your friends</code>
                 </h5>
                 <div className={'flex gap-4 pt-4'}>
                     <div className="flex justify-start flex-col">
@@ -61,8 +57,8 @@ export const Create = () => {
                                    placeholder="Set a ticket price!"/>
                         </div>
                     </div>
-                    <div className="flex justify-between flex-col">
-                        <label className="text-left block text-sm font-medium text-white">
+                    <div className="flex justify-between flex-col relative">
+                        <label className="text-left block text-sm font-medium text-white min-w-[110px]">
                             Purchasable: {purchasable ? 'On' : 'Off'}
                         </label>
                         <Switch
@@ -78,6 +74,8 @@ export const Create = () => {
             pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
                             />
                         </Switch>
+                        <InformationCircleIcon className="absolute bottom-[7px] right-0 h-6 w-6"/>
+
                     </div>
 
                 </div>

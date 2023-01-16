@@ -9,6 +9,7 @@ import {Play} from "./pages/play/Play";
 import {Code} from "./pages/code/Code";
 import {Home} from "./pages/home/Home";
 import {Create} from "./pages/create/Create";
+import {Lotteries} from "./pages/lotteries/Lotteries";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: 'create',
                 element: <Create/>,
+            },
+            {
+                path: 'lotteries',
+                element: <Lotteries/>,
             },
             {
                 path: 'code',

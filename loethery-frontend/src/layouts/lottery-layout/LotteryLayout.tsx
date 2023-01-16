@@ -41,8 +41,8 @@ export const LotteryLayout = () => {
         {name: 'Home', function: () => navigate('/')},
         {name: 'Play', function: () => navigate('/play')},
         {name: 'Create', function: () => navigate('/create')},
+        {name: 'Lotteries', function: () => navigate('/lotteries')},
         {name: 'Code', function: () => navigate('/code')},
-        {name: '@rickyvadala', function: () => window.open('https://rickyvadala.com/', '_blank')},
     ]
 
     const checkers: NavbarItemType[] = [
