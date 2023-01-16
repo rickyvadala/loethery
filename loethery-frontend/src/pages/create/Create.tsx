@@ -34,7 +34,7 @@ export const Create = () => {
         <div
             className="columns-2 gap-2 flex justify-center items-center min-h-[calc(100vh-2.5rem)] p-8 pt-24">
             <div className="text-center z-10 text-xl text-white">
-                <h1 className="text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">
+                <h1 className="cursor-default text-6xl md:text-7xl lg:text-8xl drop-shadow-2xl">
                     <Logo/>
                 </h1>
                 <h5 className="mt-8 flex flex-col items-start">
