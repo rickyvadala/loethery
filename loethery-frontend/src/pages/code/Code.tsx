@@ -1,7 +1,7 @@
 import React from "react";
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {vscDarkPlus} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {address} from "../../utils/constants/contracts/Lottery/address";
+import {officialContractAddress} from "../../utils/constants/contracts/Lottery/address";
 import {code} from "../../utils/constants/contracts/Lottery/code";
 import {Logo} from "../../components/atoms/logo/Logo";
 import {ChainEnum} from "../../utils/enums/ChainEnum";
@@ -22,7 +22,8 @@ export const Code = () => {
                 </a>
             </div>
             <code className={"z-20 flex justify-left w-full max-w-screen-md font-bold"}>Solidity Contract</code>
-            <code className={"z-20 flex justify-left w-full max-w-screen-md break-all"}>Address: {address}</code>
+            <code
+                className={"z-20 flex justify-left w-full max-w-screen-md break-all"}>Address: {officialContractAddress}</code>
             <code className={"z-20 flex justify-left w-full max-w-screen-md"}>Network: Goerli Testnet
                 (ChainID: {ChainEnum.GOERLI_TEST_NETWORK})
             </code>

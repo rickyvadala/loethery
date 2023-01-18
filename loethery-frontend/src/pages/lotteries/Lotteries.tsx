@@ -2,9 +2,12 @@ import {Logo} from "../../components/atoms/logo/Logo";
 import React, {useEffect, useState} from "react";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {fetchLotteries} from "../../services/firestore.service";
+import {NavigateFunction, useNavigate} from "react-router-dom";
 
 export const Lotteries = () => {
-    const {accountConnected, web3Enabled} = useMetaMaskAccount()
+    const navigate: NavigateFunction = useNavigate();
+
+    const {accountConnected} = useMetaMaskAccount()
     const [tableLoader, setTableLoader] = useState<boolean>(false)
     const [lotteries, setLotteries] = useState<any>([])
 
@@ -15,8 +18,8 @@ export const Lotteries = () => {
     }
 
     useEffect(() => {
-        if (accountConnected && web3Enabled) void getLotteries()
-    }, [accountConnected, web3Enabled])
+        void getLotteries()
+    }, [])
 
     return (
         <div
@@ -58,7 +61,8 @@ export const Lotteries = () => {
                                     {/*  </tr>*/}
                                     {/*}*/}
                                     {lotteries.map(address => (
-                                        <tr key={address} className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                        <tr key={address}
+                                            className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                             <td className="text-left text-bold px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {address}
                                             </td>
@@ -71,6 +75,15 @@ export const Lotteries = () => {
                                                 <button
                                                     className="text-white bg-amber-500 p-2 rounded-md hover:bg-amber-600">
                                                     Manage
+                                                </button>
+                                                <button onClick={() => navigate(`/play/${address}`)}
+                                                        className="text-white bg-amber-500 p-2 rounded-md hover:bg-amber-600">
+                                                    Play
+                                                </button>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/play/${address}`)}
+                                                    className="text-white bg-amber-500 p-2 rounded-md hover:bg-amber-600">
+                                                    Share
                                                 </button>
                                             </td>
                                         </tr>

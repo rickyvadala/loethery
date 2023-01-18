@@ -16,13 +16,13 @@ export const Create = () => {
     const [ticketPrice, setTicketPrice] = useState('0.02')
     const {accountConnected} = useMetaMaskAccount()
 
-    const {deployService} = useContract()
+    const {deployServiceFactory} = useContract()
     const [setLoading] = useOutletContext<any>();
 
     const deploy = async () => {
         try {
             setLoading(true)
-            const deployed = await deployService.onDeploy(ticketPrice, purchasable)
+            const deployed = await deployServiceFactory().onDeploy(ticketPrice, purchasable)
             await addLottery(accountConnected, deployed.contractAddress)
         } catch (e) {
             console.log(e)
@@ -39,7 +39,7 @@ export const Create = () => {
                 </h1>
                 <h5 className="mt-8 flex flex-col items-start">
                     <code>1. Create your own lottery</code>
-                    <code>2. Share it with anybody</code>
+                    <code>2. Share it with everyone</code>
                     <code>3. Play with your friends</code>
                 </h5>
                 <div className={'flex gap-4 pt-4'}>

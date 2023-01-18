@@ -25,6 +25,10 @@ const router = createBrowserRouter([
                 element: <Play/>,
             },
             {
+                path: 'play/:address',
+                element: <Play/>,
+            },
+            {
                 path: 'create',
                 element: <Create/>,
             },

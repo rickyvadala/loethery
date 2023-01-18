@@ -1,23 +1,19 @@
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import {createContext, ReactNode, useContext} from "react";
 import {useMetaMaskAccount} from "./MetaMaskProvider";
 import {ethers} from "ethers";
-import {address} from "../utils/constants/contracts/Lottery/address";
+import {officialContractAddress} from "../utils/constants/contracts/Lottery/address";
 import {abi} from '../utils/constants/contracts/Lottery/Lottery.json';
 import {LotteryService} from "../services/lottery.service";
 import {DeployService} from "../services/deploy.service";
 
 type ContractContextType = {
-    contract: ethers.Contract | undefined;
-    contractSigned: ethers.Contract | undefined;
-    lotteryService: LotteryService | undefined;
-    deployService: DeployService | undefined;
+    lotteryServiceFactory: (string: string) => LotteryService
+    deployServiceFactory: () => DeployService
 };
 
 const ContractContext = createContext<ContractContextType>({
-    contract: undefined,
-    contractSigned: undefined,
-    lotteryService: undefined,
-    deployService: undefined,
+    lotteryServiceFactory: undefined,
+    deployServiceFactory: undefined,
 });
 
 type ProviderProps = {
@@ -26,25 +22,20 @@ type ProviderProps = {
 
 const ContractProvider = ({children}: ProviderProps) => {
     const {accountConnected, web3Provider, web3Enabled} = useMetaMaskAccount()
-    const [contract, setContract] = useState<ethers.Contract>()
-    const [contractSigned, setContractSigned] = useState<ethers.Contract>()
-    // Instance of service
-    const [lotteryService, setLotteryService] = useState<LotteryService>()
-    const [deployService, setDeployService] = useState<DeployService>()
 
-    useEffect(() => {
-        if (web3Enabled) {
-            const _contract = new ethers.Contract(address, abi, web3Provider)
-            const _signed = _contract.connect(web3Provider.getSigner())
-            setContract(_contract)
-            setContractSigned(_signed)
+    const lotteryServiceFactory = (_contractAddress = officialContractAddress) => {
+        if (!web3Enabled) throw new Error('Web 3 not enabled')
+        const _contract = new ethers.Contract(_contractAddress, abi, web3Provider)
+        const _signed = _contract.connect(web3Provider.getSigner())
+        return new LotteryService(_signed, web3Provider, accountConnected)
+    };
 
-            setLotteryService(new LotteryService(_signed, web3Provider, accountConnected))
-            setDeployService(new DeployService(web3Provider.getSigner()))
-        }
-    }, [accountConnected, web3Enabled])
+    const deployServiceFactory = () => {
+        if (!web3Enabled) throw new Error('Web 3 not enabled')
+        return new DeployService(web3Provider.getSigner())
+    };
 
-    const value = { contract, contractSigned, lotteryService, deployService };
+    const value = {lotteryServiceFactory, deployServiceFactory};
 
     return (
         <ContractContext.Provider value={value}>

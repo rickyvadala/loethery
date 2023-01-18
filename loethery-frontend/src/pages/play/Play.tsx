@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {Logo} from "../../components/atoms/logo/Logo";
-import {useOutletContext} from "react-router-dom";
+import {useOutletContext, useParams} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
 import {useContract} from "../../providers/ContractProvider";
 import {dialogMessages} from "../../utils/constants";
@@ -16,18 +16,20 @@ export const Play = () => {
     const [balance, setBalance] = useState<string>('0')
 
     const [setLoading, setProgressLoading, openDialog, disabled] = useOutletContext<any>();
-    const {accountConnected} = useMetaMaskAccount();
-    const {lotteryService} = useContract()
+    const {accountConnected, web3Enabled} = useMetaMaskAccount();
+    const {lotteryServiceFactory} = useContract()
+    const {address} = useParams()
 
     const fetchData = async () => {
+        const service = lotteryServiceFactory(address)
         try {
             setLoading(true)
             const [_ticketPrice, _winner, _manager, _players, _balance] = await Promise.all([
-                lotteryService.fetchTicketPrice(),
-                lotteryService.fetchWinner(),
-                lotteryService.fetchManager(),
-                lotteryService.fetchPlayers(),
-                lotteryService.fetchLotteryBalance(),
+                service.fetchTicketPrice(),
+                service.fetchWinner(),
+                service.fetchManager(),
+                service.fetchPlayers(),
+                service.fetchLotteryBalance(),
             ])
             setTicketPrice(_ticketPrice)
             setWinner(_winner)
@@ -41,16 +43,19 @@ export const Play = () => {
         }
     }
 
+
     useEffect(() => {
-        if (lotteryService) void fetchData()
-    }, [lotteryService]);
+        if (web3Enabled) {
+            void fetchData()
+        }
+    }, [web3Enabled, address]);
 
     const onPurchase = () => void onTransaction('onPurchase', ticketPrice)
     const onPickWinner = () => void onTransaction('onPickWinner')
     const onTransaction = async (method: string, value?: string) => {
         try {
             setLoading(true)
-            const transaction = await lotteryService[method](value)
+            const transaction = await lotteryServiceFactory(address)[method](value)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()
