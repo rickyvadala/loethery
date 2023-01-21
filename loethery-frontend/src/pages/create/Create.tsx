@@ -1,14 +1,13 @@
 import {Logo} from "../../components/atoms/logo/Logo";
 import etherCoin from "../../assets/img/ether-coin.png";
-import React from "react";
+import React, {useState} from "react";
 import {Action} from "../../components/atoms/action/Action";
 import {useContract} from "../../providers/ContractProvider";
 import {useOutletContext} from "react-router-dom";
-import { useState } from 'react'
-import { Switch } from '@headlessui/react'
+import {Switch} from '@headlessui/react'
 import {addLottery} from "../../services/firestore.service";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
-import {InformationCircleIcon   } from "@heroicons/react/24/outline";
+import {InformationCircleIcon} from "@heroicons/react/24/outline";
 
 
 export const Create = () => {
@@ -44,7 +43,8 @@ export const Create = () => {
                 </h5>
                 <div className={'flex gap-4 pt-4'}>
                     <div className="flex justify-start flex-col">
-                        <label htmlFor="price" className="text-left block text-sm font-medium text-white">Ticket Price</label>
+                        <label htmlFor="price" className="text-left block text-sm font-medium text-white">Ticket
+                            Price</label>
                         <div className="relative mt-1 rounded-md shadow-sm">
                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <span className="text-gray-500 sm:text-sm">$</span>

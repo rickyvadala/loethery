@@ -38,7 +38,6 @@ export const LotteryLayout = () => {
 
     const hasImages = () =>  location.pathname !== '/' && location.pathname !== '/create';
     const navigation: NavbarItemType[] = [
-        {name: 'Home', function: () => navigate('/')},
         {name: 'Play', function: () => navigate('/play')},
         {name: 'Create', function: () => navigate('/create')},
         {name: 'Lotteries', function: () => navigate('/lotteries')},

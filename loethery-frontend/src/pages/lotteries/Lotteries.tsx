@@ -3,12 +3,15 @@ import React, {useEffect, useState} from "react";
 import {useMetaMaskAccount} from "../../providers/MetaMaskProvider";
 import {fetchLotteries} from "../../services/firestore.service";
 import {NavigateFunction, useNavigate} from "react-router-dom";
+import {FaceFrownIcon,MagnifyingGlassCircleIcon} from "@heroicons/react/24/outline";
+import {Action} from "../../components/atoms/action/Action";
+
 
 export const Lotteries = () => {
     const navigate: NavigateFunction = useNavigate();
 
     const {accountConnected} = useMetaMaskAccount()
-    const [tableLoader, setTableLoader] = useState<boolean>(false)
+    const [tableLoader, setTableLoader] = useState<boolean>(true)
     const [lotteries, setLotteries] = useState<any>([])
 
     const getLotteries = async () => {
@@ -18,12 +21,12 @@ export const Lotteries = () => {
     }
 
     useEffect(() => {
-        void getLotteries()
-    }, [])
+        accountConnected && void getLotteries()
+    }, [accountConnected])
 
     return (
         <div
-            className="columns-2 gap-2 flex justify-center items-center min-h-[calc(100vh-2.5rem)] p-8 pt-24">
+            className="flex justify-center items-center min-h-[calc(100vh-2.5rem)] p-8 pt-24">
             <div className="text-center z-10 text-xl text-white">
                 <h1 className="text-6xl drop-shadow-2xl cursor-default">
                     <Logo/>
@@ -32,7 +35,7 @@ export const Lotteries = () => {
                     <code>My Lotteries</code>
                 </h5>
 
-                <div className="flex flex-col max-w-[90vw]">
+                <div className="w-full max-w-[90vw] min-w-[50vw]">
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="pt-2 inline-block min-w-full sm:px-6 lg:px-8">
                             <div className="overflow-hidden">
@@ -50,16 +53,20 @@ export const Lotteries = () => {
                                     </tr>
                                     </thead>
                                     <tbody className={'w-full relative'}>
-                                    {/*{!tableLoader &&*/}
-                                    {/*  <tr>*/}
-                                    {/*    <td className="absolute w-full p-4 bg-white text-sm text-center text-black">Loading...</td>*/}
-                                    {/*  </tr>*/}
-                                    {/*}*/}
-                                    {/*{lotteries.length &&*/}
-                                    {/*  <tr>*/}
-                                    {/*    <td className="absolute w-full p-4 bg-white text-sm text-center text-black">No results...</td>*/}
-                                    {/*  </tr>*/}
-                                    {/*}*/}
+                                    {(tableLoader || lotteries.length === 0) &&
+                                      <tr className="h-24 bg-white">
+                                        <td>
+                                          <span
+                                            className={"left-[calc(50%-1.5rem)] top-[calc(50%-1.5rem)] absolute text-black"}>
+                                            {tableLoader
+                                                ? <MagnifyingGlassCircleIcon className="h-12 w-12"/>
+                                                : <FaceFrownIcon className="h-12 w-12"/>
+                                            }
+                                          </span>
+                                        </td>
+                                        <td/>
+                                      </tr>
+                                    }
                                     {lotteries.map(address => (
                                         <tr key={address}
                                             className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
@@ -94,6 +101,15 @@ export const Lotteries = () => {
                         </div>
                     </div>
                 </div>
+                {lotteries.length === 0 && !tableLoader && (
+                    <div className={"flex flex-col gap-4 pt-4"}>
+                        <h2>No lotteries found...</h2>
+                        <div className={"flex flex-row gap-4"}>
+                            <Action onClick={() => navigate('/play')} label={'Play now!'}/>
+                            <Action onClick={() => navigate('/create')} label={'Create one!'}/>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
