@@ -20,6 +20,14 @@ export class LotteryService {
         }
     }
 
+    async fetchPurchasable() {
+        try {
+            return await this.contract.purchasable()
+        } catch (e) {
+            throw e
+        }
+    }
+
     async fetchWinner() {
         try {
             return await this.contract.winner()
@@ -49,6 +57,25 @@ export class LotteryService {
             return ethers.utils.formatEther(await this.provider.getBalance(this.contract.address))
         } catch (e) {
             console.error('fetchLotteryBalance: ', e)
+            throw e
+        }
+    }
+
+    async onSetPurchasable(purchasable: boolean) {
+        try {
+            return await this.contract.setPurchasable(purchasable, {from: this.account})
+        } catch (e) {
+            throw e
+        }
+    }
+
+    async onSetTicketPrice(ticketPrice: string) {
+        try {
+            return await this.contract.setTicketPrice(
+                ethers.utils.parseUnits(ticketPrice, 'ether'),
+                {from: this.account}
+            )
+        } catch (e) {
             throw e
         }
     }

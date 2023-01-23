@@ -4,9 +4,8 @@ import {Logo} from "../../components/atoms/logo/Logo";
 import {useOutletContext, useParams} from "react-router-dom";
 import {Action} from "../../components/atoms/action/Action";
 import {useContract} from "../../providers/ContractProvider";
-import {dialogMessages} from "../../utils/constants";
+import {dialogMessages, EMPTY_ADDRESS} from "../../utils/constants";
 
-const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const Play = () => {
     const [players, setPlayers] = useState<Array<any>>([])
@@ -16,7 +15,7 @@ export const Play = () => {
     const [balance, setBalance] = useState<string>('0')
 
     const [setLoading, setProgressLoading, openDialog, disabled] = useOutletContext<any>();
-    const {accountConnected, web3Enabled} = useMetaMaskAccount();
+    const {web3Enabled} = useMetaMaskAccount();
     const {lotteryServiceFactory} = useContract()
     const {address} = useParams()
 
@@ -43,19 +42,16 @@ export const Play = () => {
         }
     }
 
-
     useEffect(() => {
         if (web3Enabled) {
             void fetchData()
         }
     }, [web3Enabled, address]);
 
-    const onPurchase = () => void onTransaction('onPurchase', ticketPrice)
-    const onPickWinner = () => void onTransaction('onPickWinner')
-    const onTransaction = async (method: string, value?: string) => {
+    const onPurchase = async () => {
         try {
             setLoading(true)
-            const transaction = await lotteryServiceFactory(address)[method](value)
+            const transaction = await lotteryServiceFactory(address).onPurchase(ticketPrice)
             setLoading(false)
             setProgressLoading(true)
             await transaction.wait()
@@ -103,14 +99,6 @@ export const Play = () => {
                     <p className={"mb-2"}>This contract is managed by:</p>
                     <p>{manager}</p>
                 </div>
-
-                {Number(accountConnected) === Number(manager) && (
-                    <>
-                        <hr className={"w-full"}/>
-                        <p className={"mb-2"}>Pick a winner!</p>
-                        <Action disabled={disabled} onClick={onPickWinner} label={'Start'}/>
-                    </>
-                )}
             </div>
         </div>
     );
